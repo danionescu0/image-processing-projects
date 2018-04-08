@@ -1,0 +1,12 @@
+#image is resized by width before processing to increase performance (speed)
+resize_image_by_width = 600
+
+#delay between processing frames, frames are skipped for better performance
+process_image_delay_ms = 100
+
+mqtt = {
+    'host' : 'localhost',
+    'port' : 1883, # mosquitto default port
+    'user' : 'user',
+    'password' : 'your_password'
+}
