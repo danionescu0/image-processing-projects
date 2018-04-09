@@ -40,7 +40,13 @@ sudo apt-get install mosquitto
 * Configure mosquitto user and password and edit config.py and set the mosquitto user and password
 
 ### Running the project
+activate virual environment if needed
 
 * Start the web server
-
+````
+python webserver.py 
+````
 * Start the background process
+````
+python background.py 
+````

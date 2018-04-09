@@ -1,7 +1,8 @@
 #image is resized by width before processing to increase performance (speed)
 resize_image_by_width = 400
 
-rotate_camera_degrees = 180
+# angle to rotate camera in degreeds
+rotate_camera_by = 180
 
 #delay between processing frames, frames are skipped for better performance
 process_image_delay_ms = 100
