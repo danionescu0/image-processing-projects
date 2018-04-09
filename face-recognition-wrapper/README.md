@@ -2,7 +2,7 @@
 
 [Work in progress]
 
-This library is a wrapper for "face_recognition".
+This library is a wrapper for face recognition alorithm.
 
 It provides an http API for:
 
@@ -56,11 +56,23 @@ python webserver.py
 python background.py 
 ````
 
-* Listen to mqtt events, for example with cli mosquitto client:
+### Creating users, deleting users, adding faces to users, deleting faces
+
+* Create new user
+
+
+### Listen to mqtt events, for example with cli mosquitto client:
 
 ````
 sudo apt-get install mosquitto-clients
 mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
 ````
 
+* Example response:
 
+````
+Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces/found', ... (100 bytes))
+{"left_px": 187, "user_id": 2, "top_px": 14, "user_name": "dan, "right_px": 262, "bottom_px": 88}
+````
+
+Will receive a json encoded user data (if found), and face coordonates in picture

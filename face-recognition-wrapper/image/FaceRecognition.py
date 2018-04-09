@@ -3,7 +3,7 @@ from typing import List
 
 import face_recognition
 
-from FaceDetector import FaceDetector
+from image.FaceDetector import FaceDetector
 from model.Face import Face
 
 

@@ -1,17 +1,15 @@
-import time
 import argparse
 
 import cv2
 import imutils
+from image.FaceFileNamesProvider import FaceFileNamesProvider
+from image.FaceRecognition import FaceRecognition
 
 import config
-from FrameProvider import FrameProvider
-from FaceRecognition import FaceRecognition
-from FaceFileNamesProvider import FaceFileNamesProvider
-from MqttConnection import MqttConnection
 from FaceDetectNotifier import FaceDetectNotifier
+from MqttConnection import MqttConnection
 from UserRepository import UserRepository
-
+from image.FrameProvider import FrameProvider
 
 # configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
@@ -38,9 +36,7 @@ while not frame_provider.received_stop():
     frame = imutils.resize(frame, width=config.resize_image_by_width)
     frame = imutils.rotate(frame, config.rotate_camera_by)
     faces = face_recognition.find(frame)
-    print(faces)
     if len(faces) > 0:
-        print('notify')
         face_notifier.notify(faces)
     if args.video:
         cv2.imshow('frame', frame)
