@@ -7,14 +7,21 @@ import config
 from UserRepository import UserRepository
 from web.UserHandler import UserHandler
 from web.FaceHandler import FaceHandler
+from imageprocessing.FaceExtractor import FaceExtractor
 
 
 user_repo = UserRepository(config.mongodb_uri)
+face_extractor = FaceExtractor('./faces/')
 
 def make_app():
     return tornado.web.Application([
         (r"/user/(\w*)", UserHandler, dict(user_repo=user_repo)),
-        (r"/face/(\w*)", FaceHandler, dict(user_repo=user_repo,upload_path='./temp'))
+        (r"/face/(\w*)", FaceHandler,
+             dict(
+                 user_repo=user_repo,
+                  upload_path='./temp',
+                  face_extractor=face_extractor)
+             )
     ])
 
 parser = argparse.ArgumentParser(description='Configuration')

@@ -2,7 +2,9 @@
 
 [Work in progress]
 
-This library is a wrapper for face recognition alorithm.
+The library is well suited for a development board like Raspberry pi and for a face tracking and recognition projects.
+
+This library is a wrapper for face recognition alorithm and exposes the following API:
 
 It provides an http API for:
 

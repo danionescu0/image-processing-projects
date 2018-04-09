@@ -1,6 +1,7 @@
 import tornado
 
 from UserRepository import UserRepository
+from model.User import User
 
 
 class UserHandler(tornado.web.RequestHandler):
@@ -8,6 +9,7 @@ class UserHandler(tornado.web.RequestHandler):
         self.__user_repo = user_repo
 
     def post(self, user_id):
-        # data = json.loads(self.request.body.decode("utf-8"))
-        print(user_id)
-        self.set_status(200)
+        name = self.get_argument('name', None, True)
+        if name is None:
+            raise Exception("Please provide name")
+        self.__user_repo.add_user(User(user_id, name))

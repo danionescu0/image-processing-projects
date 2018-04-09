@@ -2,14 +2,14 @@ import argparse
 
 import cv2
 import imutils
-from image.FaceFileNamesProvider import FaceFileNamesProvider
-from image.FaceRecognition import FaceRecognition
+from imageprocessing.FaceFileNamesProvider import FaceFileNamesProvider
+from imageprocessing.FaceRecognition import FaceRecognition
 
 import config
 from FaceDetectNotifier import FaceDetectNotifier
 from MqttConnection import MqttConnection
 from UserRepository import UserRepository
-from image.FrameProvider import FrameProvider
+from imageprocessing.FrameProvider import FrameProvider
 
 # configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
@@ -32,7 +32,7 @@ while not frame_provider.received_stop():
     if not frame_provider.has_frame():
         continue
     frame = frame_provider.get_frame()
-    # image is resised by with with some amount in px for better performance
+    # imageprocessing is resised by with with some amount in px for better performance
     frame = imutils.resize(frame, width=config.resize_image_by_width)
     frame = imutils.rotate(frame, config.rotate_camera_by)
     faces = face_recognition.find(frame)
