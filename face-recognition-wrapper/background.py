@@ -19,7 +19,7 @@ parser.add_argument('--show-video', dest='video', action='store_true', help='sho
 parser.set_defaults(feature=False)
 args = parser.parse_args()
 
-user_repository = UserRepository()
+user_repository = UserRepository(config.mongodb_uri)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
 face_notifier = FaceDetectNotifier(mqtt_connection, user_repository)

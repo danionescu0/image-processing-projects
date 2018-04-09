@@ -31,6 +31,11 @@ It exposes known and unknown face detections over MQTT.
 pip install -r requirements.txt
 ````
 
+* Install mongodb and ensure and start it
+````
+sudo apt-get install mongodb
+````
+
 * Mosquitto mqtt broker: https://mosquitto.org/download/
 
 ````
@@ -50,3 +55,12 @@ python webserver.py
 ````
 python background.py 
 ````
+
+* Listen to mqtt events, for example with cli mosquitto client:
+
+````
+sudo apt-get install mosquitto-clients
+mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
+````
+
+
