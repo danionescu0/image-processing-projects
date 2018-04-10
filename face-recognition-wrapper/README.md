@@ -70,11 +70,22 @@ sudo apt-get install mosquitto-clients
 mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
 ````
 
-* Example response:
+* Example for mqtt notification of face found:
 
 ````
 Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces/found', ... (100 bytes))
-{"left_px": 187, "user_id": 2, "top_px": 14, "user_name": "dan, "right_px": 262, "bottom_px": 88}
+{"type": "face-found", "data": {"user_name": "Cicilan", "bottom_px": 121, "right_px": 237, "top_px": 47, "user_id": "25", "left_px": 162}
 ````
 
 Will receive a json encoded user data (if found), and face coordonates in picture
+
+
+**Troubleshooting:**
+
+* If your're using a raspberry pi and if the camera module is not working please check [this](https://thepihut.com/blogs/raspberry-pi-tutorials/16021420-how-to-install-use-the-raspberry-pi-camera) official Raspberry pi tutorial first
+
+* I've used opencv to capture the camera image from /dev/video0 so ensure it exists, if not you can try to activate it using:
+
+````
+sudo modprobe bcm2835-v4l2
+````

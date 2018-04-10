@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pymongo import MongoClient
 
 from model.User import User
@@ -32,7 +34,9 @@ class UserRepository:
     def delete_face(self, photoid: str):
         pass
 
-    def get_user(self, photoid: str) -> User:
+    def get_user(self, photoid: str) -> Optional[User]:
+        if not photoid:
+            return None
         user = self.get_collection(self.COLLECTION_NAME)\
             .find_one({'faces' : {'$in' : [photoid]}})
         if not user:

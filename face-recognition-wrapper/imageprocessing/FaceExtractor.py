@@ -11,19 +11,19 @@ class FaceExtractor:
         self.__face_cache = {}
         self.__images_folder = images_folder
 
-    def process(self, file_path: str, file_id: str):
+    def process(self, file_path: str, file_id: str) -> str:
         faces = self.__extract_faces(file_path)
         if len(faces) != 1:
             raise Exception("Nr of faces in imageprocessing is not 1")
         file = cv2.imread(file_path)
-        print(file_path)
         file = imutils.resize(file, width=1024)
         face = faces[0]
         cropped = file[face[0]:face[2], face[3]:face[1]]
         file_extension = ntpath.basename(file_path).split('.')[1]
         new_file_path = os.path.join(self.__images_folder, file_id + '.' + file_extension)
-        print(new_file_path)
         cv2.imwrite(new_file_path, cropped)
+
+        return new_file_path
 
     def is_valid(self, file_path: str) -> dict:
         faces = self.__extract_faces(file_path)

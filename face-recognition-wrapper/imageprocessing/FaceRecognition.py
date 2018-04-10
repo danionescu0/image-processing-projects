@@ -24,6 +24,7 @@ class FaceRecognition(FaceDetector):
             if True in matches:
                 first_match_index = matches.index(True)
                 filename = self.__known_face_filenames[first_match_index]
+
             faces.append(Face(filename, top, right, bottom, left))
 
         return faces

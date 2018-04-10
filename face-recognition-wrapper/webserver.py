@@ -5,22 +5,31 @@ import tornado.web
 
 import config
 from UserRepository import UserRepository
-from web.UserHandler import UserHandler
-from web.FaceHandler import FaceHandler
+from communication.MqttConnection import MqttConnection
+from communication.FaceNotificator import FaceNotificator
+
 from imageprocessing.FaceExtractor import FaceExtractor
+from web.FaceHandler import FaceHandler
+from web.UserHandler import UserHandler
 
 
 user_repo = UserRepository(config.mongodb_uri)
 face_extractor = FaceExtractor('./faces/')
+mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
+mqtt_connection.connect()
+face_notificator = FaceNotificator(mqtt_connection)
+
 
 def make_app():
     return tornado.web.Application([
         (r"/user/(\w*)", UserHandler, dict(user_repo=user_repo)),
         (r"/face/(\w*)", FaceHandler,
-             dict(
-                 user_repo=user_repo,
-                  upload_path='./temp',
-                  face_extractor=face_extractor)
+                 dict(
+                     user_repo=user_repo,
+                      upload_path='./temp',
+                      face_extractor=face_extractor,
+                     face_notificator=face_notificator
+                 )
              )
     ])
 

@@ -2,13 +2,16 @@ import argparse
 
 import cv2
 import imutils
-from imageprocessing.FaceFileNamesProvider import FaceFileNamesProvider
-from imageprocessing.FaceRecognition import FaceRecognition
 
 import config
 from FaceDetectNotifier import FaceDetectNotifier
-from MqttConnection import MqttConnection
 from UserRepository import UserRepository
+from communication.MqttConnection import MqttConnection
+from communication.FaceNotificator import FaceNotificator
+from communication.NotificationListener import NotificationListener
+from communication.Notification import Notification
+from imageprocessing.FaceFileNamesProvider import FaceFileNamesProvider
+from imageprocessing.FaceRecognition import FaceRecognition
 from imageprocessing.FrameProvider import FrameProvider
 
 # configure argument parser
@@ -20,13 +23,20 @@ args = parser.parse_args()
 user_repository = UserRepository(config.mongodb_uri)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
-face_notifier = FaceDetectNotifier(mqtt_connection, user_repository)
+face_notificator = FaceNotificator(mqtt_connection)
+notification_listener = NotificationListener(mqtt_connection)
+
+face_notifier = FaceDetectNotifier(face_notificator, user_repository)
 frame_provider = FrameProvider(config.process_image_delay_ms)
 frame_provider.start()
 face_filenames = FaceFileNamesProvider().load('./faces/')
 face_recognition = FaceRecognition()
 face_recognition.load_faces(face_filenames)
 
+def do_load_face(user_id: str, face_id: str, file_path: str):
+    face_recognition.load_face(file_path)
+
+notification_listener.listen(do_load_face, Notification.FACE_PROCESSED.value)
 
 while not frame_provider.received_stop():
     if not frame_provider.has_frame():

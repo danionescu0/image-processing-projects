@@ -1,17 +1,21 @@
-import os
 import json
+import os
 
 import tornado
 
 from UserRepository import UserRepository
+from communication.MqttConnection import MqttConnection
 from imageprocessing.FaceExtractor import FaceExtractor
+from communication.FaceNotificator import FaceNotificator
 
 
 class FaceHandler(tornado.web.RequestHandler):
-    def initialize(self, user_repo: UserRepository, upload_path: str, face_extractor: FaceExtractor):
+    def initialize(self, user_repo: UserRepository, upload_path: str, face_extractor: FaceExtractor,
+                   face_notificator: FaceNotificator):
         self.__user_repo = user_repo
         self.__upload_path = upload_path
         self.__face_extractor = face_extractor
+        self.__face_notificator = face_notificator
 
     def post(self, face_id):
         fileinfo = self.request.files['photo'][0]
@@ -26,8 +30,12 @@ class FaceHandler(tornado.web.RequestHandler):
                     self.set_status(500)
                     self.write(json.dumps(valid))
                 else:
-                    self.__face_extractor.process(full_path, face_id)
-                    self.__user_repo.add_face(face_id, user_id)
+                    self.__add_face(full_path, face_id, user_id)
 
         except IOError as e:
             print("Failed to write file due to IOError %s", str(e))
+
+    def __add_face(self, full_path: str, face_id: str, user_id: str):
+        face_file_path = self.__face_extractor.process(full_path, face_id)
+        self.__user_repo.add_face(face_id, user_id)
+        self.__face_notificator.notify_added(user_id, face_id, face_file_path)
