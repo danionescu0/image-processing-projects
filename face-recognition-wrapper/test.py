@@ -1,28 +1,45 @@
 import cv2
+import json
+import base64
 
-from model.Face import Face
-from model.User import User
-from UserRepository import UserRepository
+import imutils
+
 import config
+from communication.MqttConnection import MqttConnection
 
-repo = UserRepository(config.mongodb_uri)
-# repo.add_user(User("1", "july"))
-# repo.add_face("4343", "1")
-#
-# repo.add_user(User("2", "dan"))
-# repo.add_face("54645", "2")
-#
-# repo.add_user(User("3", "alex"))
-# repo.add_face("435345", "3")
-#
-# repo.add_user(User("3", "alex"))
-# repo.add_face("435345", "3")
-#
-# repo.add_user(User("4", "diana"))
-# repo.add_face("4574345", "4")
-#
-# print(repo.get_user('4574345'))
+def save_image(message):
+    data = json.loads(message.decode())
 
-image = cv2.imread("./temp/dan.jpg")
-cropped = image[70:170, 440:540]
-cv2.imwrite("./temp/dan.jpg", cropped)
+    encoded_bytes = data['data']['image'].encode('utf-8')
+    print (encoded_bytes)
+    with open('test.jpg', 'wb') as thefile:
+        thefile.write(base64.b64decode(encoded_bytes))
+
+
+mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
+mqtt_connection.listen(save_image)
+mqtt_connection.connect()
+while True:
+    pass
+
+source_file = './temp/4343.jpg'
+dest_file = './temp/hihihi.jpg'
+# with open(source_file, 'rb') as open_file:
+#     image_disc = open_file.read()
+#     print(image_disc)
+#     image_bytes = base64.b64encode(image_disc)
+#     print(image_bytes)
+#     image_str = image_bytes.decode('utf-8')
+#
+#     print(image_str)
+#     print ('reversing')
+#
+#     encoded_bytes = image_str.encode('utf-8')
+#     print(encoded_bytes)
+#     decoded_from_base_64 = base64.b64decode(encoded_bytes)
+#
+#     print(decoded_from_base_64)
+#     with open(dest_file, "wb") as myfile:
+#         myfile.write(decoded_from_base_64)
+
+

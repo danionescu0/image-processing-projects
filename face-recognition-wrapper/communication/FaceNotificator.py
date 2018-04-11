@@ -12,7 +12,7 @@ class FaceNotificator:
     def __init__(self, mqtt: MqttConnection) -> None:
         self.__mqtt = mqtt
 
-    def notify_found(self, user: Optional[User], face: Face):
+    def notify_found(self, user: Optional[User], face: Face, image: str):
         user_id = None
         user_name = None
         if user is not None:
@@ -24,6 +24,7 @@ class FaceNotificator:
                 'type': Notification.FACE_FOUND.value,
                 'data': {
                     'user_id': user_id,
+                    'image': image,
                     'user_name': user_name,
                     'top_px': face.top,
                     'right_px': face.right,

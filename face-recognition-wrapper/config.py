@@ -8,7 +8,7 @@ rotate_camera_by = 180
 process_image_delay_ms = 100
 
 mqtt = {
-    'host' : 'localhost',
+    'host' : '192.168.0.105',
     'port' : 1883, # mosquitto default port
     'user' : 'user',
     'password' : 'your_password'

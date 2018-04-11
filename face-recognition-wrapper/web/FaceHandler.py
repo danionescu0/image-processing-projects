@@ -4,7 +4,6 @@ import os
 import tornado
 
 from UserRepository import UserRepository
-from communication.MqttConnection import MqttConnection
 from imageprocessing.FaceExtractor import FaceExtractor
 from communication.FaceNotificator import FaceNotificator
 

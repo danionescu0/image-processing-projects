@@ -13,13 +13,16 @@ from communication.Notification import Notification
 from imageprocessing.FaceFileNamesProvider import FaceFileNamesProvider
 from imageprocessing.FaceRecognition import FaceRecognition
 from imageprocessing.FrameProvider import FrameProvider
+from imageprocessing.ImageEncoder import ImageEncoder
+
 
 # configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
-parser.add_argument('--show-video', dest='video', action='store_true', help='shows images on desktop')
+parser.add_argument('--show-video', dest='video', action='store_true', help='shows video on desktop')
 parser.set_defaults(feature=False)
 args = parser.parse_args()
 
+image_encoder = ImageEncoder('./temp/')
 user_repository = UserRepository(config.mongodb_uri)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
@@ -47,7 +50,7 @@ while not frame_provider.received_stop():
     frame = imutils.rotate(frame, config.rotate_camera_by)
     faces = face_recognition.find(frame)
     if len(faces) > 0:
-        face_notifier.notify(faces)
+        face_notifier.notify(faces, image_encoder.encode(frame))
     if args.video:
         cv2.imshow('frame', frame)
 

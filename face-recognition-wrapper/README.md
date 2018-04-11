@@ -19,10 +19,12 @@ It provides an http API for:
 
 It exposes known and unknown face detections over MQTT.
 
-#### Libraries used (special thanks)
+#### Libraries used (special thanks) for image processing
 
 [Opencv](https://github.com/opencv)
+
 [Face recognition](https://github.com/ageitgey/face_recognition)
+
 [Imutils](https://github.com/jrosebr1/imutils)
 
 
@@ -73,9 +75,11 @@ mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
 * Example for mqtt notification of face found:
 
 ````
-Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces/found', ... (100 bytes))
-{"type": "face-found", "data": {"user_name": "Cicilan", "bottom_px": 121, "right_px": 237, "top_px": 47, "user_id": "25", "left_px": 162}
+Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces', ... (100 bytes))
+{"type": "face-found", "data": {"image" : "..encoded image" , "user_name": "Cicilan", "bottom_px": 121, "right_px": 237, "top_px": 47, "user_id": "25", "left_px": 162}
 ````
+
+To decode the image first use base64.b64decode(data['data']['image'].encode('utf-8'))
 
 Will receive a json encoded user data (if found), and face coordonates in picture
 

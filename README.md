@@ -75,7 +75,7 @@ mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
 * Example for mqtt notification of face found:
 
 ````
-Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces/found', ... (100 bytes))
+Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces', ... (100 bytes))
 {"type": "face-found", "data": {"user_name": "Cicilan", "bottom_px": 121, "right_px": 237, "top_px": 47, "user_id": "25", "left_px": 162}
 ````
 

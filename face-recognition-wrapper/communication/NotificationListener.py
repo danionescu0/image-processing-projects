@@ -14,6 +14,7 @@ class NotificationListener:
         self.__type = type
         self.__connection.listen(self.__prepare)
 
+    #refactor this
     def __prepare(self, message):
         data = json.loads(message.decode())
         if data['type'] != self.__type:

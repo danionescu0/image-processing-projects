@@ -11,7 +11,7 @@ class FaceDetectNotifier:
         self.__user_repo = user_repo
 
     # given a list of face objects notifies found for each face using FaceNotificator
-    def notify(self, faces: List[Face]):
+    def notify(self, faces: List[Face], image: str):
         for face in faces:
             user = self.__user_repo.get_user(face.id)
-            self.__face_notificator.notify_found(user, face)
+            self.__face_notificator.notify_found(user, face, image)
