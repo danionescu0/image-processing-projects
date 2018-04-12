@@ -1,8 +1,6 @@
 # Face recognition wrapper
 
-[Work in progress]
 
-The library is well suited for a development board like Raspberry pi and for a face tracking and recognition projects.
 
 This library is a wrapper for face recognition alorithm and exposes the following API:
 
@@ -18,6 +16,8 @@ It provides an http API for:
 
 
 It exposes known and unknown face detections over MQTT.
+
+The library is well suited for a development board like Raspberry pi and for a face tracking and recognition projects.
 
 #### Libraries used (special thanks) for image processing
 
@@ -63,6 +63,22 @@ python background.py
 ### Creating users, deleting users, adding faces to users, deleting faces
 
 * Create new user
+
+POST request to: your_ip:8080/user/userid
+
+parameters:
+
+"name" containing the user name
+
+* Add new face to user
+
+POST request to: your_ip:8080/face/1
+
+parameters:
+
+"user_id": to what user id does the face belongs
+
+"photo": the file to be upladed (containing one face)
 
 
 ### Listen to mqtt events, for example with cli mosquitto client:

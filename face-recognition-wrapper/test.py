@@ -2,7 +2,6 @@ import cv2
 import json
 import base64
 
-import imutils
 
 import config
 from communication.MqttConnection import MqttConnection
@@ -11,7 +10,8 @@ def save_image(message):
     data = json.loads(message.decode())
 
     encoded_bytes = data['data']['image'].encode('utf-8')
-    print (encoded_bytes)
+    del data['data']['image']
+    print(data)
     with open('test.jpg', 'wb') as thefile:
         thefile.write(base64.b64decode(encoded_bytes))
 

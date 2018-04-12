@@ -4,11 +4,14 @@ resize_image_by_width = 400
 # angle to rotate camera in degreeds
 rotate_camera_by = 180
 
-#delay between processing frames, frames are skipped for better performance
+# delay between processing frames, frames are skipped for better performance
 process_image_delay_ms = 100
 
+# number of threads that will be spawned and that will handle actual face detection
+frame_processing_threads = 1
+
 mqtt = {
-    'host' : '192.168.0.105',
+    'host' : 'localhost',
     'port' : 1883, # mosquitto default port
     'user' : 'user',
     'password' : 'your_password'
