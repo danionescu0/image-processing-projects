@@ -18,7 +18,7 @@ class FaceRecognitionProcessWrapper:
         self.__input_queue = Queue(maxsize=self.__queue_size)
         self.__output_queue = Queue(maxsize=self.__queue_size)
 
-        for x in range(self.__nr_threads):
+        for thread_nr in range(self.__nr_threads):
             process = FaceRecognitionProcess(self.__face_recognition, self.__input_queue, self.__output_queue)
             process.daemon = True
             process.start()

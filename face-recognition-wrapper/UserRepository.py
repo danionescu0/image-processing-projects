@@ -31,14 +31,20 @@ class UserRepository:
         self.get_collection(self.COLLECTION_NAME)\
             .update_one({"_id": userid}, update_data, True)
 
-    def delete_face(self, photoid: str):
-        pass
+    def delete_face(self, face_id: str):
+        update_data = {
+            "$pull": {
+                "faces": face_id
+            }
+        }
+        self.get_collection(self.COLLECTION_NAME)\
+            .update_one({"faces": face_id}, update_data)
 
-    def get_user(self, photoid: str) -> Optional[User]:
-        if not photoid:
+    def get_user(self, face_id: str) -> Optional[User]:
+        if not face_id:
             return None
         user = self.get_collection(self.COLLECTION_NAME)\
-            .find_one({'faces' : {'$in' : [photoid]}})
+            .find_one({'faces' : {'$in' : [face_id]}})
         if not user:
             return None
 

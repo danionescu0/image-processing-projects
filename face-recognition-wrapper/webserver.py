@@ -7,32 +7,34 @@ import config
 from UserRepository import UserRepository
 from communication.MqttConnection import MqttConnection
 from communication.FaceNotificator import FaceNotificator
-
 from imageprocessing.FaceExtractor import FaceExtractor
 from web.FaceHandler import FaceHandler
 from web.UserHandler import UserHandler
 
 
+# configure objects instances
 user_repo = UserRepository(config.mongodb_uri)
 face_extractor = FaceExtractor('./faces/')
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
-face_notificator = FaceNotificator(mqtt_connection)
+face_notificator = FaceNotificator(mqtt_connection, user_repo,  './faces/')
 
 
+# create tornado web app
 def make_app():
     return tornado.web.Application([
         (r"/user/(\w*)", UserHandler, dict(user_repo=user_repo)),
         (r"/face/(\w*)", FaceHandler,
                  dict(
                      user_repo=user_repo,
-                      upload_path='./temp',
-                      face_extractor=face_extractor,
+                     upload_path='./temp',
+                     face_extractor=face_extractor,
                      face_notificator=face_notificator
                  )
              )
     ])
 
+# configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
 parser.add_argument('--port', dest='port', type=str, default=8080)
 args = parser.parse_args()

@@ -1,23 +1,26 @@
 # Face recognition wrapper
 
+# Face recognition wrapper
 
 
-This library is a wrapper for face recognition alorithm and exposes the following API:
 
-It provides an http API for:
+This library  uses a video stream (from a webcam or raspbery pi camera) to identify faces and match then against 
+known persons and notify what has found using MQTT.
 
-- creating a person profile
+*Features:*
 
-- uploading a photo for the person
+- face identification in video stream
 
-- delete a photo for the person
+- face matching against known persons faces
 
-- delete the person
+- it uses a configurable number of processing making use of all the cores in the system 
+
+- HTTP API to creata, add delete user and faces
+
+- MQTT notifications with face coordonates, person id (if found), and encoded image
 
 
-It exposes known and unknown face detections over MQTT.
-
-The library is well suited for a development board like Raspberry pi and for a face tracking and recognition projects.
+The library is well suited for a development board like Raspberry pi and for a face tracking and face recognition.
 
 #### Libraries used (special thanks) for image processing
 
@@ -62,23 +65,50 @@ python background.py
 
 ### Creating users, deleting users, adding faces to users, deleting faces
 
-* Create new user
+HTTP API:
+
+- create a person profile
+
+- uploade a photo for the person
+
+- delete a person photo
+
+- delete a person
+
+
+*Create new user*
 
 POST request to: your_ip:8080/user/userid
 
-parameters:
+GET parameters:
+
+userid
+
+POST parameters
 
 "name" containing the user name
 
-* Add new face to user
+*Add new face to user*
 
-POST request to: your_ip:8080/face/1
+POST request to: your_ip:8080/face/face_id
 
-parameters:
+GET parameters:
+
+"face_id": id of the face that will be stored in the db
+
+POST parameters:
 
 "user_id": to what user id does the face belongs
 
 "photo": the file to be upladed (containing one face)
+
+*Delete face for user*
+
+DELETE request to: your_ip:8080/face/1
+
+GET parameters:
+
+"face_id": id of the face that will be stored in the db
 
 
 ### Listen to mqtt events, for example with cli mosquitto client:
@@ -88,14 +118,14 @@ sudo apt-get install mosquitto-clients
 mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
 ````
 
-* Example for mqtt notification of face found:
+* Example for MQTT notification of face found:
 
 ````
 Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces', ... (100 bytes))
 {"type": "face-found", "data": {"image" : "..encoded image" , "user_name": "Cicilan", "bottom_px": 121, "right_px": 237, "top_px": 47, "user_id": "25", "left_px": 162}
 ````
 
-To decode the image first use base64.b64decode(data['data']['image'].encode('utf-8'))
+To decode the image (in python) use base64.b64decode(data['data']['image'].encode('utf-8'))
 
 Will receive a json encoded user data (if found), and face coordonates in picture
 

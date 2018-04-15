@@ -5,7 +5,6 @@ import cv2
 import imutils
 
 import config
-from FaceDetectNotifier import FaceDetectNotifier
 from UserRepository import UserRepository
 from communication.MqttConnection import MqttConnection
 from communication.FaceNotificator import FaceNotificator
@@ -29,10 +28,9 @@ image_encoder = ImageEncoder('./temp/')
 user_repository = UserRepository(config.mongodb_uri)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
-face_notificator = FaceNotificator(mqtt_connection)
+face_notificator = FaceNotificator(mqtt_connection, user_repository, './faces/')
 notification_listener = NotificationListener(mqtt_connection)
 
-face_notifier = FaceDetectNotifier(face_notificator, user_repository)
 frame_provider = FrameProvider(config.process_image_delay_ms)
 frame_provider.start()
 face_filenames = FaceFileNamesProvider().load('./faces/')
@@ -43,12 +41,14 @@ face_recognition_process_wrapper = FaceRecognitionProcessWrapper(
     face_recognition, config.frame_processing_threads * 3, config.frame_processing_threads)
 face_recognition_process_wrapper.start()
 
+# load new face in face detection system without restarting
+notification_listener.listen(Notification.FACE_ADDED.value,
+                             lambda user_id, face_id, file_path :face_recognition.load_face(file_path))
 
-def do_load_face(user_id: str, face_id: str, file_path: str):
-    face_recognition.load_face(file_path)
+# delete face from face detection system
+notification_listener.listen(Notification.FACE_DELETED.value, lambda face_id: face_recognition.delete_face(face_id))
 
-notification_listener.listen(do_load_face, Notification.FACE_PROCESSED.value)
-
+# process frame by frame
 while not frame_provider.received_stop():
     if not frame_provider.has_frame():
         continue
@@ -65,7 +65,7 @@ while not frame_provider.received_stop():
         continue
     image, faces = result
     if len(faces) > 0:
-        face_notifier.notify(faces, image_encoder.encode(image))
+        face_notificator.notify_found(faces, image_encoder.encode(image))
 
 
 frame_provider.stop()
