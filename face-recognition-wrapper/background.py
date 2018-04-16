@@ -19,7 +19,7 @@ from imageprocessing.FaceRecognitionProcessWrapper import FaceRecognitionProcess
 
 # configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
-parser.add_argument('--show-video', dest='video', action='store_true', help='shows video on desktop')
+parser.add_argument('--show-video', dest='video', action='store_true', help='Shows video on desktop')
 parser.set_defaults(feature=False)
 args = parser.parse_args()
 
