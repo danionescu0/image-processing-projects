@@ -1,5 +1,6 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 
 
@@ -11,14 +12,16 @@ class EmailNotifier:
         self.__sender_email_address = sender_email_address
         self.__sender_password = sender_password
 
-    def send_alert(self, email_address: str, subject: str, body: str) -> None:
-        address = self.__email_config.sender_address
-        receiver = self.__home_defence_config.notified_email_address
+    def send_alert(self, email_address: str, subject: str, body: str, attachments) -> bool:
         msg = MIMEMultipart()
         msg['From'] = self.__sender_email_address
-        msg['To'] = receiver
+        msg['To'] = email_address
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'plain'))
+        for attach in attachments or []:
+            part = MIMEApplication(attach[1], Name=attach[0])
+            part['Content-Disposition'] = 'attachment; filename="{0}"'.format(attach[0])
+            msg.attach(part)
         server = smtplib.SMTP(self.__EMAIL_HOST, self.__EMAIL_PORT)
         try:
             server.starttls()
@@ -28,3 +31,7 @@ class EmailNotifier:
             server.quit()
         except Exception as e:
             print(e)
+            return False
+
+        return True
+

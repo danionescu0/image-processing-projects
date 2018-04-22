@@ -29,7 +29,7 @@ class MqttConnection():
         self.client.on_message = on_message
         # self.client.username_pw_set(self.__user, self.__password)
         self.client.connect_async(self.__host, self.__port, 60)
-        self.client.loop_start()
+        self.client.loop_forever()
 
     def listen(self, callback: Callable[[codecs.StreamReader], None]):
         self.__callback = callback

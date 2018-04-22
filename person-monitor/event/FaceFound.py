@@ -14,4 +14,3 @@ class FaceFound:
     def __str__(self) -> str:
         return 'Username: {0}, Userid: {1}, Top_right: {2}, Bottom_left: {3}'\
             .format(self.user_name, self.user_id, self.top_right, self.bottom_left)
-

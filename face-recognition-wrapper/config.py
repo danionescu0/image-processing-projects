@@ -8,7 +8,7 @@ rotate_camera_by = 180
 process_image_delay_ms = 100
 
 # number of threads that will be spawned and that will handle actual face detection
-frame_processing_threads = 2
+frame_processing_threads = 1
 
 mqtt = {
     'host' : 'localhost',

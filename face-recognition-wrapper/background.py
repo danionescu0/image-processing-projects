@@ -43,10 +43,11 @@ face_recognition_process_wrapper.start()
 
 # load new face in face detection system without restarting
 notification_listener.listen(Notification.FACE_ADDED.value,
-                             lambda user_id, face_id, file_path :face_recognition.load_face(file_path))
+                             lambda user_id, face_id, file_path: face_recognition.load_face(file_path))
 
 # delete face from face detection system
 notification_listener.listen(Notification.FACE_DELETED.value, lambda face_id: face_recognition.delete_face(face_id))
+
 
 # process frame by frame
 while not frame_provider.received_stop():
