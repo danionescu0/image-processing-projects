@@ -1,4 +1,4 @@
-class Face:
+class DetectedFace:
     def __init__(self, id: str, top: int, right: int, bottom: int, left:int) -> None:
         self.id = id
         self.top = top

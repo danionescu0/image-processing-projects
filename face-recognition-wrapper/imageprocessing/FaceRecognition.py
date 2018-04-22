@@ -4,7 +4,7 @@ from typing import List
 import face_recognition
 
 from imageprocessing.FaceDetector import FaceDetector
-from model.Face import Face
+from model.DetectedFace import DetectedFace
 
 
 class FaceRecognition(FaceDetector):
@@ -12,7 +12,7 @@ class FaceRecognition(FaceDetector):
         self.__known_face_encodings = []
         self.__known_face_filenames = []
 
-    def find(self, image) -> List[Face]:
+    def find(self, image) -> List[DetectedFace]:
         rgb_frame = image[:, :, ::-1]
         # Find all the faces and face encodings in the current frame of video
         face_locations = face_recognition.face_locations(rgb_frame)
@@ -27,7 +27,7 @@ class FaceRecognition(FaceDetector):
                 first_match_index = matches.index(True)
                 filename = self.__known_face_filenames[first_match_index]
 
-            faces.append(Face(filename, top, right, bottom, left))
+            faces.append(DetectedFace(filename, top, right, bottom, left))
 
         return faces
 

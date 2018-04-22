@@ -10,6 +10,7 @@ from communication.FaceNotificator import FaceNotificator
 from imageprocessing.FaceExtractor import FaceExtractor
 from web.FaceHandler import FaceHandler
 from web.UserHandler import UserHandler
+from web.UsersHandler import UsersHandler
 
 
 # configure objects instances
@@ -24,6 +25,7 @@ face_notificator = FaceNotificator(mqtt_connection, user_repo,  './faces/')
 def make_app():
     return tornado.web.Application([
         (r"/user/(\w*)", UserHandler, dict(user_repo=user_repo)),
+        (r"/users", UsersHandler, dict(user_repo=user_repo)),
         (r"/face/(\w*)", FaceHandler,
                  dict(
                      user_repo=user_repo,

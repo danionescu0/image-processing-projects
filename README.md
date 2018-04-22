@@ -27,7 +27,9 @@ The library is well suited for a development board like Raspberry pi and for a f
 [Imutils](https://github.com/jrosebr1/imutils)
 
 
-### Installing dependencies
+### Installing dependencies & configure
+
+* Edit config.py and configure mqtt, and other settings if needed
 
 * Install python requirements:
 ````
@@ -72,7 +74,7 @@ HTTP API:
 - delete a person
 
 
-*Create new user*
+**Create new user**
 
 POST request to: your_ip:8080/user/userid
 
@@ -84,7 +86,7 @@ POST parameters
 
 "name" containing the user name
 
-*Add new face to user*
+**Add new face to user**
 
 POST request to: your_ip:8080/face/face_id
 
@@ -98,14 +100,21 @@ POST parameters:
 
 "photo": the file to be upladed (containing one face)
 
-*Delete face for user*
+**Delete face for user**
 
-DELETE request to: your_ip:8080/face/1
+DELETE request to: your_ip:8080/face/face_id
 
 GET parameters:
 
 "face_id": id of the face that will be stored in the db
 
+**Get users with photos**
+
+Get request to: your_ip:8080/users?page=1
+
+GET parameters:
+
+"page" the page number to be returned
 
 ### Listen to mqtt events, for example with cli mosquitto client:
 
@@ -118,7 +127,7 @@ mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
 
 ````
 Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces', ... (100 bytes))
-{"type": "face-found", "data": {"image" : "..encoded image" , "user_name": "Cicilan", "bottom_px": 121, "right_px": 237, "top_px": 47, "user_id": "25", "left_px": 162}
+{"type": "face-found", "data": {"image" : "..encoded image", "user_id": "25", "user_name": "Cicilan", bottom_px": 121, "right_px": 237, "top_px": 47, "left_px": 162}
 ````
 
 To decode the image (in python) use base64.b64decode(data['data']['image'].encode('utf-8'))
@@ -135,3 +144,46 @@ Will receive a json encoded user data (if found), and face coordonates in pictur
 ````
 sudo modprobe bcm2835-v4l2
 ````
+
+
+
+
+# Person monitor
+
+[work in progress]
+
+In this project we're going to implement a real time person monitor with email notification,
+text to speech etc.
+
+We're going to receive face notification from "Face recognition wrapper" over MQTT and react
+to them by:
+
+- sending email with known/unknown person 
+
+- use a text to speech API to communicate by voice 
+
+- track known persons on a graph using free IOT platforms like thinger.io
+
+- configure known persons, email notification etc etc in a graphical UI
+
+
+### Installing dependencies & configure
+
+* Edit config.py and configure mqtt, and other settings if needed
+
+* Details about sending email with gmail: http://stackabuse.com/how-to-send-emails-with-gmail-using-python/
+
+* Install python requirements:
+````
+pip install -r requirements.txt
+````
+
+* Mosquitto mqtt broker: https://mosquitto.org/download/
+
+````
+sudo apt-get install mosquitto
+````
+
+* Configure mosquitto user and password and edit config.py and set the mosquitto user and password
+
+

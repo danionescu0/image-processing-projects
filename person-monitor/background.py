@@ -1,6 +1,3 @@
-from pydispatch import dispatcher
-
-
 import config
 from communication.MqttConnection import MqttConnection
 from communication.EmailNotifier import EmailNotifier

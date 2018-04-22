@@ -1,11 +1,11 @@
 import abc
 from typing import List
-from model.Face import Face
+from model.DetectedFace import DetectedFace
 
 
 class FaceDetector(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def find(self, image) -> List[Face]:
+    def find(self, image) -> List[DetectedFace]:
         pass
 
     @abc.abstractmethod

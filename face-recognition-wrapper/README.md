@@ -74,7 +74,7 @@ HTTP API:
 - delete a person
 
 
-*Create new user*
+**Create new user**
 
 POST request to: your_ip:8080/user/userid
 
@@ -86,7 +86,7 @@ POST parameters
 
 "name" containing the user name
 
-*Add new face to user*
+**Add new face to user**
 
 POST request to: your_ip:8080/face/face_id
 
@@ -100,14 +100,21 @@ POST parameters:
 
 "photo": the file to be upladed (containing one face)
 
-*Delete face for user*
+**Delete face for user**
 
-DELETE request to: your_ip:8080/face/1
+DELETE request to: your_ip:8080/face/face_id
 
 GET parameters:
 
 "face_id": id of the face that will be stored in the db
 
+**Get users with photos**
+
+Get request to: your_ip:8080/users?page=1
+
+GET parameters:
+
+"page" the page number to be returned
 
 ### Listen to mqtt events, for example with cli mosquitto client:
 

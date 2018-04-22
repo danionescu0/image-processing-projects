@@ -7,7 +7,7 @@ from communication.MqttConnection import MqttConnection
 from communication.Notification import Notification
 from UserRepository import UserRepository
 from model.User import User
-from model.Face import Face
+from model.DetectedFace import DetectedFace
 
 
 class FaceNotificator:
@@ -16,12 +16,12 @@ class FaceNotificator:
         self.__user_repo = user_repo
         self.__faces_path = faces_path
 
-    def notify_found(self, faces: List[Face], image: str):
+    def notify_found(self, faces: List[DetectedFace], image: str):
         for face in faces:
             user = self.__user_repo.get_user(face.id)
             self.__notify(user, face, image)
 
-    def __notify(self, user: Optional[User], face: Face, image: str):
+    def __notify(self, user: Optional[User], face: DetectedFace, image: str):
         user_id = None
         user_name = None
         if user is not None:
