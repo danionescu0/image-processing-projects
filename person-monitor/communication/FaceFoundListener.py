@@ -26,6 +26,6 @@ class FaceFoundListener:
         face_found = FaceFound(
             decoded_file, decoded_data['user_name'], decoded_data['user_id'],
             (decoded_data['right_px'], decoded_data['top_px']),
-            (decoded_data['left_px'], decoded_data['bottom_px'],)
+            (decoded_data['left_px'], decoded_data['bottom_px'])
         )
         dispatcher.send(FaceFound.NAME, event=face_found)

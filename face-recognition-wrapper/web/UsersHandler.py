@@ -1,15 +1,18 @@
 import json
-
+import os
 import tornado
 
 from UserRepository import UserRepository
+from imageprocessing.ImageEncoder import ImageEncoder
 
 
 class UsersHandler(tornado.web.RequestHandler):
     LIMIT = 2
 
-    def initialize(self, user_repo: UserRepository):
+    def initialize(self, user_repo: UserRepository, image_encoder: ImageEncoder, faces_path: str):
         self.__user_repo = user_repo
+        self.__image_encoder = image_encoder
+        self.__faces_path = faces_path
 
     def get(self):
         page = int(self.get_argument('page', 1, True))
@@ -21,5 +24,17 @@ class UsersHandler(tornado.web.RequestHandler):
             {
                 'id': user.id,
                 'name': user.name,
-                'images': user.image_ids
+                'image_ids': user.image_ids,
+                'images' : self.__get_images(user.image_ids)
              } for user in users]
+
+    # @Todo remove this .jpg hack
+    def __get_images(self, image_ids: list) -> list:
+        images = []
+        for id in image_ids:
+            file_path = os.path.join(self.__faces_path, id + '.jpg')
+            images.append(self.__image_encoder.encode_image_file(file_path))
+
+        return images
+
+

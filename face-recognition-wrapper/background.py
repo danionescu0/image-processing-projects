@@ -1,4 +1,3 @@
-import time
 import argparse
 
 import cv2
@@ -24,16 +23,16 @@ parser.set_defaults(feature=False)
 args = parser.parse_args()
 
 #configure objects with dependencies
-image_encoder = ImageEncoder('./temp/')
+image_encoder = ImageEncoder(config.temporary_path)
 user_repository = UserRepository(config.mongodb_uri)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
-face_notificator = FaceNotificator(mqtt_connection, user_repository, './faces/')
+face_notificator = FaceNotificator(mqtt_connection, user_repository, config.faces_path)
 notification_listener = NotificationListener(mqtt_connection)
 
 frame_provider = FrameProvider(config.process_image_delay_ms)
 frame_provider.start()
-face_filenames = FaceFileNamesProvider().load('./faces/')
+face_filenames = FaceFileNamesProvider().load(config.faces_path)
 face_recognition = FaceRecognition()
 face_recognition.load_faces(face_filenames)
 
@@ -66,7 +65,7 @@ while not frame_provider.received_stop():
         continue
     image, faces = result
     if len(faces) > 0:
-        face_notificator.notify_found(faces, image_encoder.encode(image))
+        face_notificator.notify_found(faces, image_encoder.encode_numpy_image(image))
 
 
 frame_provider.stop()
