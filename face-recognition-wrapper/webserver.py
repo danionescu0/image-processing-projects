@@ -9,6 +9,7 @@ from communication.MqttConnection import MqttConnection
 from communication.FaceNotificator import FaceNotificator
 from imageprocessing.FaceExtractor import FaceExtractor
 from imageprocessing.ImageEncoder import ImageEncoder
+from imageprocessing.FacePaths import FacePaths
 from web.FaceHandler import FaceHandler
 from web.UserHandler import UserHandler
 from web.UsersHandler import UsersHandler
@@ -16,7 +17,8 @@ from web.UsersHandler import UsersHandler
 
 # configure objects instances
 user_repo = UserRepository(config.mongodb_uri)
-face_extractor = FaceExtractor(config.faces_path)
+face_paths = FacePaths(config.faces_path, config.thumbs_path)
+face_extractor = FaceExtractor(face_paths)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
 face_notificator = FaceNotificator(mqtt_connection, user_repo,  config.faces_path)
@@ -30,13 +32,14 @@ def make_app():
             dict(
                 user_repo=user_repo,
                 image_encoder=image_encoder,
-                faces_path=config.faces_path
+                face_paths=face_paths
             )),
         (r"/face/(\w*)", FaceHandler,
                  dict(
                      user_repo=user_repo,
                      upload_path='./temp',
                      face_extractor=face_extractor,
+                     face_paths=face_paths,
                      face_notificator=face_notificator
                  )
              )

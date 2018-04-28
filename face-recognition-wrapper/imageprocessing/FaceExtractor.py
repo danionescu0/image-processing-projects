@@ -1,29 +1,32 @@
 import ntpath
-import os
 
 import cv2
 import face_recognition
 import imutils
 
+from imageprocessing.FacePaths import FacePaths
+
 
 class FaceExtractor:
-    def __init__(self, images_folder: str) -> None:
+    def __init__(self, face_paths: FacePaths) -> None:
         self.__face_cache = {}
-        self.__images_folder = images_folder
+        self.__face_paths = face_paths
 
-    def process(self, file_path: str, file_id: str) -> str:
+    def process(self, file_path: str, face_id: str) -> str:
         faces = self.__extract_faces(file_path)
         if len(faces) != 1:
             raise Exception("Nr of faces in imageprocessing is not 1")
-        file = cv2.imread(file_path)
-        file = imutils.resize(file, width=1024)
+        high_res_img = cv2.imread(file_path)
+        high_res_img = imutils.resize(high_res_img, width=FacePaths.RESOLUTION_HIGH)
         face = faces[0]
-        cropped = file[face[0]:face[2], face[3]:face[1]]
+        cropped = high_res_img[face[0]:face[2], face[3]:face[1]]
         file_extension = ntpath.basename(file_path).split('.')[1]
-        new_file_path = os.path.join(self.__images_folder, file_id + '.' + file_extension)
-        cv2.imwrite(new_file_path, cropped)
+        high_resolution_path = self.__face_paths.get_high_resolution(face_id, file_extension)
+        cv2.imwrite(high_resolution_path, cropped)
+        low_res_img = imutils.resize(cropped, width=FacePaths.RESOLUTION_LOW)
+        cv2.imwrite(self.__face_paths.get_low_resolution(face_id, file_extension), low_res_img)
 
-        return new_file_path
+        return high_resolution_path
 
     def is_valid(self, file_path: str) -> dict:
         faces = self.__extract_faces(file_path)
@@ -45,7 +48,7 @@ class FaceExtractor:
         if file_path in self.__face_cache:
             return self.__face_cache[file_path]
         file = cv2.imread(file_path)
-        file = imutils.resize(file, width=1024)
+        file = imutils.resize(file, width=FacePaths.RESOLUTION_HIGH)
         rgb_file = file[:, :, ::-1]
         self.__face_cache[file_path] = face_recognition.face_locations(rgb_file)
 

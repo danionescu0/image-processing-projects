@@ -20,6 +20,9 @@ mqtt = {
 # folder containing faces images
 faces_path = './faces/'
 
+# folder containing thumbnails
+thumbs_path = './thumbs/'
+
 # temporary folder path for images
 temporary_path = './temp/'
 
