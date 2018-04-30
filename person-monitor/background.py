@@ -10,18 +10,22 @@ from lock.TimedLock import TimedLock
 from lock.EmailTimedLock import EmailTimedLock
 from lock.ConfiguredTimedLock import ConfiguredTimedLock
 
-
+listener = ListenerContainer()
 email_timed_lock = EmailTimedLock(TimedLock(), config.email['min_time_between_emails'])
 email_notifier = EmailNotifier(config.email['sender_addr'], config.email['sender_password'])
-email_alert_listener = EmailAlertListener(email_notifier, email_timed_lock, config.email['notified_address'])
-devicehub_sensor_notifier = DevicehubSensorNotifier(config.devicehub['api_key'], config.devicehub['project_id'])
-devicehub_timed_lock = ConfiguredTimedLock('devicehub', 60, TimedLock())
-devicehub_alert_listener = DevicehubListener(devicehub_timed_lock, devicehub_sensor_notifier,
-                                             config.devicehub['device_uuid'],
-                                             config.devicehub['user_id_to_sensor_mapping'])
-listener = ListenerContainer()
-listener.register_listener(email_alert_listener)
-listener.register_listener(devicehub_alert_listener)
+
+if config.email['enabled']:
+    email_alert_listener = EmailAlertListener(email_notifier, email_timed_lock, config.email['notified_address'])
+    listener.register_listener(email_alert_listener)
+
+if config.devicehub['enabled']:
+    devicehub_sensor_notifier = DevicehubSensorNotifier(config.devicehub['api_key'], config.devicehub['project_id'])
+    devicehub_timed_lock = ConfiguredTimedLock('devicehub', 60, TimedLock())
+    devicehub_alert_listener = DevicehubListener(devicehub_timed_lock, devicehub_sensor_notifier,
+                                                 config.devicehub['device_uuid'],
+                                                 config.devicehub['user_id_to_sensor_mapping'])
+    listener.register_listener(devicehub_alert_listener)
+
 listener.initialise()
 
 
