@@ -1,13 +1,13 @@
 from pydispatch import dispatcher
 
 from communication.EmailNotifier import EmailNotifier
+from lock.ConfiguredTimedLock import ConfiguredTimedLock
 from event.FaceFound import FaceFound
 from listener.BaseListener import BaseListener
-from lock.EmailTimedLock import EmailTimedLock
 
 
 class EmailAlertListener(BaseListener):
-    def __init__(self, email_notifier: EmailNotifier, timed_lock: EmailTimedLock, address: str) -> None:
+    def __init__(self, email_notifier: EmailNotifier, timed_lock: ConfiguredTimedLock, address: str) -> None:
         self.__email_notifier = email_notifier
         self.__timed_lock = timed_lock
         self.__address = address

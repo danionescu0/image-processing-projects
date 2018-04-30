@@ -7,14 +7,14 @@ from listener.ListenerContainer import ListenerContainer
 from listener.EmailAlertListener import EmailAlertListener
 from listener.DevicehubListener import DevicehubListener
 from lock.TimedLock import TimedLock
-from lock.EmailTimedLock import EmailTimedLock
 from lock.ConfiguredTimedLock import ConfiguredTimedLock
 
-listener = ListenerContainer()
-email_timed_lock = EmailTimedLock(TimedLock(), config.email['min_time_between_emails'])
-email_notifier = EmailNotifier(config.email['sender_addr'], config.email['sender_password'])
 
+listener = ListenerContainer()
 if config.email['enabled']:
+    email_timed_lock = ConfiguredTimedLock('email', config.email['min_time_between_emails'], TimedLock())
+    email_notifier = EmailNotifier(config.email['sender_addr'], config.email['sender_password'])
+
     email_alert_listener = EmailAlertListener(email_notifier, email_timed_lock, config.email['notified_address'])
     listener.register_listener(email_alert_listener)
 
