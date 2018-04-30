@@ -1,5 +1,9 @@
 import time
 from lock.TimedLock import TimedLock
+from devicehub.devicehub import Sensor, Actuator, Device, Project
+from random import randint
+from time import sleep
+import requests
 
 # import facebook
 #
@@ -16,14 +20,26 @@ from lock.TimedLock import TimedLock
 print(int(time.time()))
 
 
-lock = TimedLock()
-print ('set lock cici for 2 seconds')
-lock.set_lock("cici", 2)
-print ("get lock mim")
-print (lock.has_lock("mimi"))
-time.sleep(1)
-print("after 1 second")
-print (lock.has_lock("cici"))
-print("after another 1.5 seconds")
-time.sleep(1.5)
-print (lock.has_lock("cici"))
+#curl -H "X-ApiKey: ed16df23-36e4-4507-94d0-654af8172e58" -H "Content-Type: application/json" -i "https://api.devicehub.net/v2/project/4/device/e62fbb50-9fca-4188-8a3a-92d8452c7e66/sensor/Dan/data" -d "{\"value\":0}"
+
+
+PROJECT_ID = '4'
+DEVICE_UUID = 'e62fbb50-9fca-4188-8a3a-92d8452c7e66'
+API_KEY = 'ed16df23-36e4-4507-94d0-654af8172e58'
+# project = Project(PROJECT_ID, persistent=True)
+# device = Device(project, DEVICE_UUID, API_KEY)
+# dan = Sensor(Sensor.ANALOG, 'Dan')
+# device.addSensor(dan)
+#
+#
+# dan.addValue(1)
+# sleep(5)
+# device.send()
+headers = {
+    'X-ApiKey' : 'ed16df23-36e4-4507-94d0-654af8172e58',
+    'Content-Type': 'application/json'
+}
+r = requests.post("https://api.devicehub.net/v2/project/4/device/e62fbb50-9fca-4188-8a3a-92d8452c7e66/sensor/Dan/data",
+                  headers=headers,
+                  data='{\"value\":1}')
+print(r.status_code, r.reason)

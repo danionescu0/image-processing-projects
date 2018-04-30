@@ -8,11 +8,11 @@ text to speech etc.
 We're going to receive face notification from "Face recognition wrapper" over MQTT and react
 to them by:
 
-- sending email with known/unknown person 
+- sending email with known/unknown person along with a picture
 
 - use a text to speech API to communicate by voice 
 
-- track known persons on a graph using free IOT platforms like thinger.io
+- track known persons on a graph using free IOT platforms like devicehub
 
 - configure known persons, email notification etc etc in a graphical UI
 
