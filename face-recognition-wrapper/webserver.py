@@ -24,6 +24,7 @@ mqtt_connection.connect()
 face_notificator = FaceNotificator(mqtt_connection, user_repo,  config.faces_path)
 image_encoder = ImageEncoder(config.temporary_path)
 
+
 # create tornado web app
 def make_app():
     return tornado.web.Application([

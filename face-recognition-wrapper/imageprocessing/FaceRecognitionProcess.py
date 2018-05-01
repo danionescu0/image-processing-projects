@@ -1,4 +1,3 @@
-import time
 from multiprocessing import Process, Queue
 
 from imageprocessing.FaceRecognition import FaceRecognition

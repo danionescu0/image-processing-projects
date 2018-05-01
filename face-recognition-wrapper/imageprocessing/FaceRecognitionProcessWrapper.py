@@ -1,4 +1,3 @@
-import time
 from multiprocessing import Queue
 
 from imageprocessing.FaceRecognitionProcess import FaceRecognitionProcess
@@ -6,7 +5,7 @@ from imageprocessing.FaceRecognition import FaceRecognition
 
 
 class FaceRecognitionProcessWrapper:
-    def __init__(self, face_recognition: FaceRecognition, queue_size: int, nr_threads) -> None:
+    def __init__(self, face_recognition: FaceRecognition, queue_size: int, nr_threads: int) -> None:
         self.__face_recognition = face_recognition
         self.__nr_threads = nr_threads
         self.__input_queue = None

@@ -56,9 +56,18 @@ activate virual environment if needed
 ````
 python webserver.py 
 ````
+
 * Start the background process
+
 ````
-python background.py 
+python video_processor.py --camera_device 0
+````
+Camera parameter is optional and it's mapped to the camera resource. It can be a raspberry pi camera or a webcam:
+0 means it's mapped with /dev/video0
+
+to start the video in debug mode (display the video source in a window)
+````
+python video_processor.py --show-video --camera_device 0
 ````
 
 ### Creating users, deleting users, adding faces to users, deleting faces

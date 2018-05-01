@@ -34,7 +34,6 @@ class UsersHandler(tornado.web.RequestHandler):
         print(image_ids)
         for id in image_ids:
             file_path = self.__face_paths.get_low_resolution(id, 'jpg')
-            print(file_path)
             images.append(self.__image_encoder.encode_image_file(file_path))
 
         return images

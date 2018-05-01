@@ -18,11 +18,12 @@ from imageprocessing.FaceRecognitionProcessWrapper import FaceRecognitionProcess
 
 # configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
-parser.add_argument('--show-video', dest='video', action='store_true', help='Shows video on desktop')
+parser.add_argument('--show-video', dest='video', action='store_true', help='Shows video on GUI')
+parser.add_argument('--camera_device', dest='camera', type=int, default=0)
 parser.set_defaults(feature=False)
 args = parser.parse_args()
 
-#configure objects with dependencies
+# configure objects with dependencies
 image_encoder = ImageEncoder(config.temporary_path)
 user_repository = UserRepository(config.mongodb_uri)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
@@ -31,10 +32,10 @@ face_notificator = FaceNotificator(mqtt_connection, user_repository, config.face
 notification_listener = NotificationListener(mqtt_connection)
 
 frame_provider = FrameProvider(config.process_image_delay_ms)
-frame_provider.start()
-face_filenames = FaceFileNamesProvider().load(config.faces_path)
+frame_provider.start(args.camera)
+filepaths = FaceFileNamesProvider().load(config.faces_path)
 face_recognition = FaceRecognition()
-face_recognition.load_faces(face_filenames)
+face_recognition.load_faces(filepaths)
 
 face_recognition_process_wrapper = FaceRecognitionProcessWrapper(
     face_recognition, config.frame_processing_threads * 3, config.frame_processing_threads)
@@ -49,7 +50,7 @@ notification_listener.listen(Notification.FACE_DELETED.value, lambda face_id: fa
 
 
 # process frame by frame
-while not frame_provider.received_stop():
+while not cv2.waitKey(30) & 0xFF == ord('q'):
     if not frame_provider.has_frame():
         continue
     frame = frame_provider.get_frame()
