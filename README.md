@@ -6,7 +6,6 @@ Projects:
 
 
 # Face recognition wrapper
-# Face recognition wrapper
 
 This library  uses a video stream (from a webcam or raspbery pi camera) to identify faces and match then against 
 known persons and notify what has found using MQTT.
@@ -56,6 +55,8 @@ sudo apt-get install mosquitto
 ````
 
 * Configure mosquitto user and password and edit config.py and set the mosquitto user and password
+
+For more information on how to set user and password check this url: http://www.steves-internet-guide.com/mqtt-username-password-example/
 
 ### Running the project
 activate virual environment if needed
@@ -144,7 +145,7 @@ mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
 
 ````
 Client mosqsub/7452-ionescu-X5 received PUBLISH (d0, q0, r0, m0, 'faces', ... (100 bytes))
-{"type": "face-found", "data": {"image" : "..encoded image", "user_id": "25", "user_name": "Cicilan", bottom_px": 121, "right_px": 237, "top_px": 47, "left_px": 162}
+{"type": "face-found", "data": {"image" : "..encoded image", faces: [{"user_id": "25", "user_name": "Cicilan", bottom_px": 121, "right_px": 237, "top_px": 47, "left_px": 162}, ...{..} ]}
 ````
 
 To decode the image (in python) use base64.b64decode(data['data']['image'].encode('utf-8'))

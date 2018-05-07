@@ -10,11 +10,14 @@ process_image_delay_ms = 100
 # number of threads that will be spawned and that will handle actual face detection
 frame_processing_threads = 1
 
+# below the mqtt is configured to work over websockets
+# for more info check this url : http://www.steves-internet-guide.com/mqtt-websockets/
+
 mqtt = {
     'host' : 'localhost',
-    'port' : 1883, # mosquitto default port
-    'user' : 'user',
-    'password' : 'your_password'
+    'port' : 1883,
+    'user' : 'username',
+    'password' : 'password',
 }
 
 # folder containing faces images

@@ -10,7 +10,7 @@ class FrameProvider:
         self.__last_run = None
 
     def start(self, camera_device: int):
-        self.__video_capture = cv2.VideoCapture(camera_device)  # start video capture from raspberry pi camera
+        self.__video_capture = cv2.VideoCapture(camera_device)
         self.__last_run = self.__get_current_millis()
 
     def stop(self):

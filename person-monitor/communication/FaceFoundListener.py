@@ -20,6 +20,7 @@ class FaceFoundListener:
         data = json.loads(message.decode())
         callback_type = data['type']
         decoded_data = data['data']
+        print ('face found')
         if callback_type != self.TYPE:
             return
         decoded_file = base64.b64decode(decoded_data['image'].encode('utf-8'))

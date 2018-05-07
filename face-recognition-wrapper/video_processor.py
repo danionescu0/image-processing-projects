@@ -26,7 +26,8 @@ args = parser.parse_args()
 # configure objects with dependencies
 image_encoder = ImageEncoder(config.temporary_path)
 user_repository = UserRepository(config.mongodb_uri)
-mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
+mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'],
+                                 config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
 face_notificator = FaceNotificator(mqtt_connection, user_repository, config.faces_path)
 notification_listener = NotificationListener(mqtt_connection)

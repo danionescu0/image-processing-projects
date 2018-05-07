@@ -17,32 +17,32 @@ class FaceNotificator:
         self.__faces_path = faces_path
 
     def notify_found(self, faces: List[DetectedFace], image: str):
-        for face in faces:
-            user = self.__user_repo.get_user(face.id)
-            self.__notify(user, face, image)
+        faces = [self.__get_face_dict(face) for face in faces]
+        data = {
+                'type': Notification.FACE_FOUND.value,
+                'data': {
+                    'image': image,
+                    'faces': faces
+                }
+            }
+        self.__mqtt.send(MqttConnection.CHANNEL, json.dumps(data))
 
-    def __notify(self, user: Optional[User], face: DetectedFace, image: str):
+    def __get_face_dict(self, face: DetectedFace):
+        user = self.__user_repo.get_user(face.id)
         user_id = None
         user_name = None
         if user is not None:
             user_id = user.id
             user_name = user.name
 
-        encoded_data = json.dumps(
-            {
-                'type': Notification.FACE_FOUND.value,
-                'data': {
+        return {
                     'user_id': user_id,
-                    'image': image,
                     'user_name': user_name,
                     'top_px': face.top,
                     'right_px': face.right,
                     'bottom_px': face.bottom,
                     'left_px': face.left
                 }
-            }
-        )
-        self.__mqtt.send(MqttConnection.CHANNEL, encoded_data)
 
     def notify_added(self, user_id: str, face_id: str, file_path: str):
         encoded_data = json.dumps(
