@@ -20,13 +20,14 @@ class FaceFoundListener:
         data = json.loads(message.decode())
         callback_type = data['type']
         decoded_data = data['data']
-        print ('face found')
         if callback_type != self.TYPE:
             return
         decoded_file = base64.b64decode(decoded_data['image'].encode('utf-8'))
+        # hack
+        face_data = decoded_data['faces']
         face_found = FaceFound(
-            decoded_file, decoded_data['user_name'], decoded_data['user_id'],
-            (decoded_data['right_px'], decoded_data['top_px']),
-            (decoded_data['left_px'], decoded_data['bottom_px'])
+            decoded_file, face_data['user_name'], face_data['user_id'],
+            (face_data['right_px'], face_data['top_px']),
+            (face_data['left_px'], face_data['bottom_px'])
         )
         dispatcher.send(FaceFound.NAME, event=face_found)
