@@ -1,14 +1,17 @@
 import React from 'react';
 import { Image } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
-import {websocketCallbacks, websocketClientConnect} from './src/utils/websockets'
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { websocketCallbacks, websocketClientConnect } from './src/utils/websockets'
+import { MINIMUM_TIME_BETWEEN_NOTIFICATION } from "./config"
 
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            foundImage: null
+            foundImage: null,
+            lastNotification : 0,
         }
     }
 
@@ -19,25 +22,33 @@ export default class App extends React.Component {
     connectToWebsocket() {
         websocketClientConnect('faces')
             .then((client) => {
-                console.log(client);
                 websocketCallbacks(client, (message) => {
-                    response = JSON.parse(message.payloadString);
+                    if (this.shouldSkipCurrentNotification()) {
+                        return;
+                    }
+                    const response = JSON.parse(message.payloadString);
                     if (!response.hasOwnProperty('data')) {
                         return;
                     }
-                    b64EncodedImage = response['data']['image'];
-                    this.setState({'foundImage': b64EncodedImage});
+                    const b64EncodedImage = response['data']['image'];
+                    this.setState({'foundImage': b64EncodedImage, 'lastNotification' : Date.now()});
                 })
             }, e => {
                 console.log('failed', e);
             });
     }
 
+    shouldSkipCurrentNotification() {
+        return Date.now() - this.state.lastNotification < MINIMUM_TIME_BETWEEN_NOTIFICATION;
+    }
+
+
     render() {
         return (
             <View style={styles.container}>
                 <Text>Last found image</Text>
-                <Image style={{width: 300, height: 300}} source={{uri: `data:image/jpeg;base64,${this.state.foundImage}`}} />
+                <Image style={{width: 300, height: 300}}
+                       source={{uri: `data:image/jpeg;base64,${this.state.foundImage}`}} />
             </View>
         );
     }
