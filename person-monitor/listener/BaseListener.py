@@ -1,6 +1,6 @@
 import abc
 
-from event.FaceFound import FaceFound
+from event.FacesFound import FacesFound
 
 
 class BaseListener(metaclass=abc.ABCMeta):
@@ -9,5 +9,5 @@ class BaseListener(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def listen(self, event: FaceFound):
+    def listen(self, event: FacesFound):
         pass

@@ -1,7 +1,7 @@
 from pydispatch import dispatcher
 
 from listener.BaseListener import BaseListener
-from event.FaceFound import FaceFound
+from event.FacesFound import FacesFound
 from lock.ConfiguredTimedLock import ConfiguredTimedLock
 from communication.DevicehubSensorNotifier import DevicehubSensorNotifier
 
@@ -15,12 +15,14 @@ class DevicehubListener(BaseListener):
         self.__device_uuid = device_uuid
         self.__user_id_to_sensor_mapping = user_id_to_sensor_mapping
 
-    def listen(self, event: FaceFound):
+    def listen(self, event: FacesFound):
         if self.__devicehub_timed_lock.has_lock():
             return
-        if event.user_id not in self.__user_id_to_sensor_mapping:
-            return
-        self.__devicehub_sensor_notifier.send(self.__device_uuid, self.__user_id_to_sensor_mapping[event.user_id], '1')
+        for user in event.users:
+            if user.user_id not in self.__user_id_to_sensor_mapping:
+                return
+            self.__devicehub_sensor_notifier.send(self.__device_uuid,
+                                                  self.__user_id_to_sensor_mapping[user.user_id], '1')
         self.__devicehub_timed_lock.set_lock()
 
     def connect(self):
