@@ -14,6 +14,7 @@ from imageprocessing.FaceRecognition import FaceRecognition
 from imageprocessing.FrameProvider import FrameProvider
 from imageprocessing.ImageEncoder import ImageEncoder
 from imageprocessing.FaceRecognitionProcessWrapper import FaceRecognitionProcessWrapper
+from imageprocessing.ImageDebug import ImageDebug
 
 
 # configure argument parser
@@ -41,6 +42,7 @@ face_recognition.load_faces(filepaths)
 face_recognition_process_wrapper = FaceRecognitionProcessWrapper(
     face_recognition, config.frame_processing_threads * 3, config.frame_processing_threads)
 face_recognition_process_wrapper.start()
+image_debug = ImageDebug((0, 255, 255), 2)
 
 # load new face in face detection system without restarting
 notification_listener.listen(Notification.FACE_ADDED.value,
@@ -55,19 +57,16 @@ while not cv2.waitKey(30) & 0xFF == ord('q'):
     if not frame_provider.has_frame():
         continue
     frame = frame_provider.get_frame()
-    # imageprocessing is resised by with with some amount in px for better performance
+    # imageprocessing is resised for better performance
     frame = imutils.resize(frame, width=config.resize_image_by_width)
     frame = imutils.rotate(frame, config.rotate_camera_by)
 
+    face_recognition_process_wrapper.put_image(frame)
+    image, faces = face_recognition_process_wrapper.get_result()
+    if image is not None and len(faces) > 0:
+        face_notificator.notify_found(faces, image_encoder.encode_numpy_image(image))
+        frame = image_debug.enhance_with_debug(frame, faces)
     if args.video:
         cv2.imshow('frame', frame)
-    face_recognition_process_wrapper.put_image(frame)
-    result = face_recognition_process_wrapper.get_result()
-    if result is None:
-        continue
-    image, faces = result
-    if len(faces) > 0:
-        face_notificator.notify_found(faces, image_encoder.encode_numpy_image(image))
-
 
 frame_provider.stop()

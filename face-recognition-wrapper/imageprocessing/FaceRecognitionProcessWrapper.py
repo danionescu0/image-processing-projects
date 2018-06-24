@@ -30,4 +30,4 @@ class FaceRecognitionProcessWrapper:
         if self.__output_queue.qsize() > 0:
             return self.__output_queue.get()
 
-        return None
+        return None, None
