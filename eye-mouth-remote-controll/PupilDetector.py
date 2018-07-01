@@ -5,15 +5,18 @@ import numpy as np
 class PupilDetector:
     LEFT_EYE_COORDONATES = (36, 42)
 
+    def __init__(self, black_threshold: int) -> None:
+        self.__black_threshold = black_threshold
+
     def find_pupil(self, image, face_coordonates):
         cropped_eye = self.__crop_eye(face_coordonates, image)
         cv2.imshow("Eye", cropped_eye)
 
         gray = cv2.cvtColor(cropped_eye, cv2.COLOR_BGR2GRAY)
-        thresh = cv2.threshold(gray, 40, 255, cv2.THRESH_BINARY_INV)[1]
+        thresh = cv2.threshold(gray, self.__black_threshold, 255, cv2.THRESH_BINARY_INV)[1]
         thresh = cv2.dilate(thresh, None, iterations=2)
         cv2.imshow("Pupil", thresh)
-        
+
         contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
                                 cv2.CHAIN_APPROX_SIMPLE)[-2]
 
@@ -25,6 +28,9 @@ class PupilDetector:
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
         return (center, int(radius))
+
+    def update_black_threshold(self, value: int):
+        self.__black_threshold = value
 
     def __crop_eye(self, face_coordonates, image):
         eye = face_coordonates[self.LEFT_EYE_COORDONATES[0]:self.LEFT_EYE_COORDONATES[1]]
