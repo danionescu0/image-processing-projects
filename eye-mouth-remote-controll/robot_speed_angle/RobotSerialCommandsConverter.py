@@ -1,4 +1,5 @@
 from MathUtils import MathUtils
+from command.Coordonates import Coordonates
 
 
 class RobotSerialCommandsConverter:
@@ -8,13 +9,10 @@ class RobotSerialCommandsConverter:
     MAX_ANGLE = 180
     MIN_ANGLE = 0
 
-    def get_from_eye_mouth(self, eye_horizontal_angle: int, mouth_vertical_percent: int) -> str:
-        pass
-
-    def get_steer_command(self, angle: int, percent_power: int, forward: bool) -> str:
+    def get_from_coordonates(self, coordonates: Coordonates) -> str:
         return self.MOTOR_COMMAND.format(
-            self.__get_converted_direction(angle),
-            self.__get_converted_power(percent_power, forward)
+            self.__get_converted_direction(coordonates.eyes_horizontal_angle),
+            self.__get_converted_power(75, True)
         )
 
     def __get_converted_power(self, percent_power: int, forward: bool) -> str:

@@ -9,7 +9,7 @@ pupil_black_level = 50
 
 # mqtt connection details
 mqtt = {
-    'host' : 'mosquitto',
+    'host' : '192.168.0.111',
     'port' : 1883, # mosquitto default port
     'user' : 'user',
     'password' : 'your_password'

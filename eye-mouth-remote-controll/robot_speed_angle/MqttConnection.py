@@ -22,5 +22,5 @@ class MqttConnection():
         self.__client.connect_async(self.__host, self.__port, 60)
         self.__client.loop_start()
 
-    def send(self, channel : str, message : str):
-        self.__client.publish(channel, message, 2)
+    def send_movement_command(self, message : str):
+        self.__client.publish(self.__MOVEMENT_CHANNEL, message, 2)

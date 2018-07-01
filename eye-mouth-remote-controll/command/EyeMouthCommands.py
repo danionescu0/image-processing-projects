@@ -11,6 +11,7 @@ class EyeMouthCommands:
         if pupil_center == False:
             return Coordonates()
         height, width, _ = eye_shape
+        print(pupil_center, width)
         eyes_horizontal_angle = MathUtils.remap(pupil_center[0], 0, width, 0, 180)
 
         #@todo replace 10 with calculated value

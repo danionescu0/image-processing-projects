@@ -1,12 +1,12 @@
 Projects:
 
-1. [Face recognition wrapper](#Face recognition wrapper)
+1. [Face recognition wrapper](#Face-recognition-wrapper)
 
-2. [Person monitor](#Person monitor)
+2. [Person monitor](#Person-monitor)
 
-3. [Eye mouth remote controll]](#Eye mouth remote controll)
+3. [Eye mouth remote controll]](#Eye-mouth-remote-controll)
 
-# Face recognition wrapper
+#Face recognition wrapper
 
 This library  uses a video stream (from a webcam or raspbery pi camera) to identify faces and match then against 
 known persons and notify what has found using MQTT.
@@ -167,7 +167,7 @@ sudo modprobe bcm2835-v4l2
 
 
 
-# Person monitor
+#Person monitor
 
 
 In this project we're going to implement a real time person monitor with email notification,
@@ -258,16 +258,39 @@ email = {
 }
 ````
 
-# Eye mouth remote controll
+#Eye mouth remote controll
+
+*Work in progress*
+
 
 This project takes a video stream identify the eyes and mouth and enable their coordonates to be used as a remote controll
 
-The pupil coordonates will be compared to the eye corners and a left-right command can be mapped
+The pupil coordonates will be compared to the eye corners and an angle will be extracted.
 
-The mount height will be measured and a up-down command can be mapped
+0 degreeds for maximum left pupil position, 180 degres for maximum right pupil position.
+
+The mouth opening will me measured, and for maximum opening there will be a value of 100, for minimum opening  a value of 0
+
+My current demo will be to use this repository: https://github.com/danionescu0/robot-camera-platform
+
+to command the robot direction using the eyes and the speed using the mouth.
 
 
-*Work in progress*
+*Selecting a video camera*
+The video camera should meet this criterias:
+
+- it should have night vision
+
+- it should have over 5 MP resoulution
+
+If you want to use a raspberry pi camera on your laptop it cannot be done directly, but you can stream the video using
+
+uv4l (https://www.linux-projects.org/uv4l/installation/) and then use the stream locally using -v option in the python script
+
+ex: -v http://ip:port/stream/video.mjpeg
+
+My tests are made with raspberry pi night vision camera and the results are pretty good.
+
 
 1. Install python requirements:
 ````

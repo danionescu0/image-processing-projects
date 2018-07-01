@@ -19,7 +19,7 @@ class FrameProvider(Process):
             try:
                 self.__frame.get(False)
             except queue.Empty:
-                  pass
+                pass
             try:
                 self.__frame.put(frame, False)
             except queue.Full:

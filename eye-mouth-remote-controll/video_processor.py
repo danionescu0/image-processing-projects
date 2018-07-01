@@ -10,8 +10,8 @@ import config
 from PupilDetector import PupilDetector
 from Timer import Timer
 from command.EyeMouthCommands import EyeMouthCommands
-from robots.MqttConnection import MqttConnection
-from robots.RobotSerialCommandsConverter import RobotSerialCommandsConverter
+from robot_speed_angle.MqttConnection import MqttConnection
+from robot_speed_angle.RobotSerialCommandsConverter import RobotSerialCommandsConverter
 from video.FrameProviderProcessWrapper import FrameProviderProcessWrapper
 
 argparse = argparse.ArgumentParser()
@@ -33,6 +33,7 @@ robot_serial_command_converter = RobotSerialCommandsConverter()
 timer = Timer()
 
 frame_provider.start()
+mqtt_connection.connect()
 
 while not cv2.waitKey(30) & 0xFF == ord('q'):
     image = frame_provider.get_last_frame()
@@ -53,6 +54,9 @@ while not cv2.waitKey(30) & 0xFF == ord('q'):
     face_rectangle = face_coordonates_rectangles[0]
     face_coordonates = face_utils.shape_to_np(predictor(gray, face_rectangle))
     coordonates = eye_mouth_commands.get(image, face_coordonates)
-    print(coordonates)
+    if coordonates.has_detection():
+        command = robot_serial_command_converter.get_from_coordonates(coordonates)
+        print(coordonates, command)
+        mqtt_connection.send_movement_command(command)
 
 frame_provider.stop()
