@@ -5,5 +5,12 @@ resize_image_by_width = 800
 rotate_camera_by = 0
 
 # black threshold below level for pupil detecton
-
 pupil_black_level = 50
+
+# mqtt connection details
+mqtt = {
+    'host' : 'mosquitto',
+    'port' : 1883, # mosquitto default port
+    'user' : 'user',
+    'password' : 'your_password'
+}

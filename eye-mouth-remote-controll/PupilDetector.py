@@ -1,15 +1,17 @@
+from typing import Tuple
+
 import cv2
 import numpy as np
 
 
 class PupilDetector:
-    LEFT_EYE_COORDONATES = (36, 42)
+    __LEFT_EYE_COORDONATES = (36, 42)
 
     def __init__(self, black_threshold: int) -> None:
         self.__black_threshold = black_threshold
 
-    def find_pupil(self, image, face_coordonates):
-        cropped_eye = self.__crop_eye(face_coordonates, image)
+    def find(self, image, face_coordonates) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+        cropped_eye = self.__crop_eye(image, face_coordonates)
         cv2.imshow("Eye", cropped_eye)
 
         gray = cv2.cvtColor(cropped_eye, cv2.COLOR_BGR2GRAY)
@@ -21,19 +23,19 @@ class PupilDetector:
                                 cv2.CHAIN_APPROX_SIMPLE)[-2]
 
         if len(contours) == 0:
-            return (False, False)
+            return (False, cropped_eye.shape)
         largest_contour = max(contours, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(largest_contour)
         M = cv2.moments(largest_contour)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
-        return (center, int(radius))
+        return (center, cropped_eye.shape)
 
-    def update_black_threshold(self, value: int):
+    def update_black_threshold(self, value: int) -> None:
         self.__black_threshold = value
 
-    def __crop_eye(self, face_coordonates, image):
-        eye = face_coordonates[self.LEFT_EYE_COORDONATES[0]:self.LEFT_EYE_COORDONATES[1]]
+    def __crop_eye(self, image, face_coordonates):
+        eye = face_coordonates[self.__LEFT_EYE_COORDONATES[0]:self.__LEFT_EYE_COORDONATES[1]]
         mask = np.full(image.shape, 255, dtype=np.uint8)
         channel_count = image.shape[2]
         ignore_mask_color = (0,) * channel_count
