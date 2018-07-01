@@ -1,17 +1,18 @@
-import time
 import argparse
+import time
 
-from imutils import face_utils
-import imutils
-import dlib
 import cv2
+import dlib
+import imutils
+from imutils import face_utils
 
 import config
 from PupilDetector import PupilDetector
+from Timer import Timer
+from command.EyeMouthCommands import EyeMouthCommands
 from robots.MqttConnection import MqttConnection
 from robots.RobotSerialCommandsConverter import RobotSerialCommandsConverter
-from command.EyeMouthCommands import EyeMouthCommands
-
+from video.FrameProviderProcessWrapper import FrameProviderProcessWrapper
 
 argparse = argparse.ArgumentParser()
 argparse.add_argument("-p", "--face-shape-predictor", required=True, dest="shape_predictor",
@@ -23,16 +24,20 @@ args = vars(argparse.parse_args())
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(args["shape_predictor"])
 
+frame_provider = FrameProviderProcessWrapper(args['video_input'])
 pupil_detector = PupilDetector(config.pupil_black_level)
 draw_image_font = cv2.FONT_HERSHEY_SIMPLEX
-camera_device = cv2.VideoCapture(args['video_input'])
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 eye_mouth_commands = EyeMouthCommands(pupil_detector)
 robot_serial_command_converter = RobotSerialCommandsConverter()
+timer = Timer()
 
+frame_provider.start()
 
 while not cv2.waitKey(30) & 0xFF == ord('q'):
-    ret, image = camera_device.read()
+    image = frame_provider.get_last_frame()
+    if image is None:
+        continue
     image = imutils.resize(image, width=config.resize_image_by_width)
     image = imutils.rotate(image, config.rotate_camera_by)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -50,4 +55,4 @@ while not cv2.waitKey(30) & 0xFF == ord('q'):
     coordonates = eye_mouth_commands.get(image, face_coordonates)
     print(coordonates)
 
-camera_device.release()
+frame_provider.stop()
