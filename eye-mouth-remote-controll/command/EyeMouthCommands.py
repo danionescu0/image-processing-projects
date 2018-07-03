@@ -17,5 +17,5 @@ class EyeMouthCommands:
         #@todo replace 10 with calculated value
         return Coordonates(eyes_horizontal_angle, 10)
 
-    def update_black_threshold(self, value: int) -> None:
-        self.__pupil_detector.update_black_threshold(value)
+    def update_pupil_black_threshold(self, value: int) -> None:
+        self.__pupil_detector.update_pupil_black_threshold(value)
