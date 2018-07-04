@@ -8,7 +8,6 @@ from imutils import face_utils
 
 import config
 from PupilDetector import PupilDetector
-from Timer import Timer
 from command.EyeMouthCommands import EyeMouthCommands
 from robot_speed_angle.MqttConnection import MqttConnection
 from robot_speed_angle.RobotSerialCommandsConverter import RobotSerialCommandsConverter
@@ -32,7 +31,7 @@ draw_image_font = cv2.FONT_HERSHEY_SIMPLEX
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 eye_mouth_commands = EyeMouthCommands(pupil_detector)
 robot_serial_command_converter = RobotSerialCommandsConverter()
-calibrator = Calibrator(PupilDetector)
+calibrator = Calibrator(pupil_detector)
 
 frame_provider.start()
 mqtt_connection.connect()
@@ -58,8 +57,10 @@ while True:
     face_rectangle = face_coordonates_rectangles[0]
     face_coordonates = face_utils.shape_to_np(predictor(gray_image, face_rectangle))
     if calibrator.supports_calibration(key_pressed):
-        calibrator.set_calibration(key_pressed, image, face_coordonates)
-        print(calibrator.calibratedModel)
+        calibrator.calibrate(key_pressed, image, face_coordonates)
+        eye_mouth_commands.calibrated_model = calibrator.calibrated_model
+        print('the model')
+        print(calibrator.calibrated_model)
     coordonates = eye_mouth_commands.get(image, face_coordonates)
     if coordonates.has_detection():
         command = robot_serial_command_converter.get_from_coordonates(coordonates)

@@ -5,7 +5,7 @@ resize_image_by_width = 800
 rotate_camera_by = 0
 
 # black threshold below level for pupil detecton
-pupil_black_level = 50
+pupil_black_level = 70
 
 # mqtt connection details
 mqtt = {

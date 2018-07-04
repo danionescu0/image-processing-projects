@@ -21,7 +21,6 @@ class PupilDetector:
 
         contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
                                 cv2.CHAIN_APPROX_SIMPLE)[-2]
-
         if len(contours) == 0:
             return (False, cropped_eye.shape)
         largest_contour = max(contours, key=cv2.contourArea)
