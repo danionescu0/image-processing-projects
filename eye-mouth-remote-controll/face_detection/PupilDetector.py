@@ -9,9 +9,6 @@ from face_detection.FaceModel import FaceModel
 class PupilDetector:
     __BLACK_THRESHOLD = (10, 150)
 
-    def __init__(self, black_threshold: int) -> None:
-        self.__black_threshold = black_threshold
-
     def find(self, image, face_model: FaceModel) -> Tuple[Tuple[int, int], Tuple[int, int]]:
         cropped_eye = self.__crop_eye(image, face_model)
         gray = cv2.cvtColor(cropped_eye, cv2.COLOR_BGR2GRAY)
@@ -37,9 +34,6 @@ class PupilDetector:
                 return contours, thresh
 
         return contours, thresh
-
-    def update_black_threshold(self, value: int) -> None:
-        self.__black_threshold = value
 
     def __crop_eye(self, image, face_model: FaceModel):
         eye = face_model.get_eye()

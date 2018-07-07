@@ -2,11 +2,14 @@ from MathUtils import MathUtils
 from command.Coordonates import Coordonates
 from calibration.CalibratedModel import CalibratedModel
 from face_detection.FaceModel import FaceModel
+from SimpleGui import SimpleGui
+from face_detection.PupilDetector import PupilDetector
 
 
 class EyeMouthCommands:
-    def __init__(self, pupil_detector) -> None:
+    def __init__(self, pupil_detector: PupilDetector, simple_gui: SimpleGui) -> None:
         self.__pupil_detector = pupil_detector
+        self.__simple_gui = simple_gui
         self._calibrated_model = None
 
     def get(self, image, face_model: FaceModel) -> Coordonates:
@@ -15,9 +18,9 @@ class EyeMouthCommands:
             return Coordonates()
         height, width, _ = eye_shape
         from_low, from_high = self.__get_eyes_from_values(width)
-
-        print(self.calibrated_model, pupil_center[0], from_low, from_high)
-        eyes_horizontal_angle = MathUtils.remap(pupil_center[0], from_low, from_high, 0, 180)
+        pupil_center_width = int(MathUtils.constrain(pupil_center[0], (from_low, from_high)))
+        eyes_horizontal_angle = MathUtils.remap(pupil_center_width, from_low, from_high, 0, 180)
+        self.__simple_gui.rotate_wheel(eyes_horizontal_angle)
 
         #@todo replace 10 with calculated value
         return Coordonates(eyes_horizontal_angle, 10)
@@ -29,9 +32,6 @@ class EyeMouthCommands:
             return from_low, from_high
 
         return 0, width
-
-    def update_pupil_black_threshold(self, value: int) -> None:
-        self.__pupil_detector.update_black_threshold(value)
 
     @property
     def calibrated_model(self):
