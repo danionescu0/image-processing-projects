@@ -13,6 +13,7 @@ from robot_speed_angle.MqttConnection import MqttConnection
 from robot_speed_angle.RobotSerialCommandsConverter import RobotSerialCommandsConverter
 from video.FrameProviderProcessWrapper import FrameProviderProcessWrapper
 from calibration.Calibrator import Calibrator
+from SimpleGui import SimpleGui
 
 
 argparse = argparse.ArgumentParser()
@@ -32,9 +33,11 @@ mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], confi
 eye_mouth_commands = EyeMouthCommands(pupil_detector)
 robot_serial_command_converter = RobotSerialCommandsConverter()
 calibrator = Calibrator(pupil_detector)
+simple_gui = SimpleGui(config.screen)
 
 frame_provider.start()
 mqtt_connection.connect()
+simple_gui.create_windows()
 
 
 while True:
