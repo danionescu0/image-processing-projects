@@ -1,6 +1,7 @@
 from MathUtils import MathUtils
 from command.Coordonates import Coordonates
 from calibration.CalibratedModel import CalibratedModel
+from face_detection.FaceModel import FaceModel
 
 
 class EyeMouthCommands:
@@ -8,8 +9,8 @@ class EyeMouthCommands:
         self.__pupil_detector = pupil_detector
         self._calibrated_model = None
 
-    def get(self, image, face_coordonates) -> Coordonates:
-        pupil_center, eye_shape = self.__pupil_detector.find(image, face_coordonates)
+    def get(self, image, face_model: FaceModel) -> Coordonates:
+        pupil_center, eye_shape = self.__pupil_detector.find(image, face_model)
         if pupil_center == False:
             return Coordonates()
         height, width, _ = eye_shape

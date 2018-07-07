@@ -1,5 +1,6 @@
 from calibration.CalibratedModel import CalibratedModel
-from PupilDetector import PupilDetector
+from face_detection.PupilDetector import PupilDetector
+from face_detection.FaceModel import FaceModel
 
 
 class Calibrator:
@@ -17,12 +18,12 @@ class Calibrator:
     def supports_calibration(self, key: int) -> bool:
         return key in self.SUPPORTED_CALIBRATIONS
 
-    def calibrate(self, key: int, image, face_coordonates):
+    def calibrate(self, key: int, image, face_model: FaceModel):
         if self.SUPPORTED_CALIBRATIONS[key] in ['max_left_pupil', 'min_left_pupil']:
-            self.__calibrate_eyes(self.SUPPORTED_CALIBRATIONS[key], image, face_coordonates)
+            self.__calibrate_eyes(self.SUPPORTED_CALIBRATIONS[key], image, face_model)
 
-    def __calibrate_eyes(self, which: str, image, face_coordonates):
-        center, image_shape = self.__pupil_detector.find(image, face_coordonates)
+    def __calibrate_eyes(self, which: str, image, face_model: FaceModel):
+        center, image_shape = self.__pupil_detector.find(image, face_model)
         if center is False:
             return
         if which == 'max_left_pupil':

@@ -3,15 +3,15 @@ from typing import Tuple
 import cv2
 import numpy as np
 
+from face_detection.FaceModel import FaceModel
+
 
 class PupilDetector:
-    __LEFT_EYE_COORDONATES = (36, 42)
-
     def __init__(self, black_threshold: int) -> None:
         self.__black_threshold = black_threshold
 
-    def find(self, image, face_coordonates) -> Tuple[Tuple[int, int], Tuple[int, int]]:
-        cropped_eye = self.__crop_eye(image, face_coordonates)
+    def find(self, image, face_model: FaceModel) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+        cropped_eye = self.__crop_eye(image, face_model)
         cv2.imshow("Eye", cropped_eye)
 
         gray = cv2.cvtColor(cropped_eye, cv2.COLOR_BGR2GRAY)
@@ -33,8 +33,8 @@ class PupilDetector:
     def update_black_threshold(self, value: int) -> None:
         self.__black_threshold = value
 
-    def __crop_eye(self, image, face_coordonates):
-        eye = face_coordonates[self.__LEFT_EYE_COORDONATES[0]:self.__LEFT_EYE_COORDONATES[1]]
+    def __crop_eye(self, image, face_model: FaceModel):
+        eye = face_model.get_eye()
         mask = np.full(image.shape, 255, dtype=np.uint8)
         channel_count = image.shape[2]
         ignore_mask_color = (0,) * channel_count
