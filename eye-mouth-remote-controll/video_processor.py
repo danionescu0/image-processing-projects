@@ -3,7 +3,6 @@ import argparse
 import cv2
 import dlib
 import imutils
-from imutils import face_utils
 
 import config
 from SimpleGui import SimpleGui
@@ -25,7 +24,6 @@ args = vars(argparse.parse_args())
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(args["shape_predictor"])
 face_features = FaceFeatures(detector, predictor)
-
 frame_provider = FrameProviderProcessWrapper(args['video_input'])
 pupil_detector = PupilDetector(config.pupil_black_level)
 draw_image_font = cv2.FONT_HERSHEY_SIMPLEX
@@ -48,7 +46,6 @@ while True:
     image = imutils.resize(image, width=config.resize_image_by_width)
     image = imutils.rotate(image, config.rotate_camera_by)
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # face_coordonates_rectangles = detector(gray_image, 1)
     face_model = face_features.get_face_model(gray_image)
     if not face_model.has_detection():
         cv2.putText(image, "No face", (20, 20), draw_image_font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
@@ -58,8 +55,6 @@ while True:
     cv2.createTrackbar('Pupil black value 0-255', 'Original', config.pupil_black_level, 255,
                        eye_mouth_commands.update_pupil_black_threshold)
 
-    # face_rectangle = face_coordonates_rectangles[0]
-    # face_coordonates = face_utils.shape_to_np(predictor(gray_image, face_rectangle))
     if calibrator.supports_calibration(key_pressed):
         calibrator.calibrate(key_pressed, image, face_model)
         eye_mouth_commands.calibrated_model = calibrator.calibrated_model

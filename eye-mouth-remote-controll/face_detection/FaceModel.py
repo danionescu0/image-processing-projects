@@ -2,7 +2,7 @@ from face_detection.FeaturesMapping import FeaturesMapping
 
 
 class FaceModel:
-    def __init__(self, points: None) -> None:
+    def __init__(self, points = None) -> None:
         self.__points = points
 
     def has_detection(self):

@@ -7,20 +7,17 @@ from face_detection.FaceModel import FaceModel
 
 
 class PupilDetector:
+    __BLACK_THRESHOLD = (10, 150)
+
     def __init__(self, black_threshold: int) -> None:
         self.__black_threshold = black_threshold
 
     def find(self, image, face_model: FaceModel) -> Tuple[Tuple[int, int], Tuple[int, int]]:
         cropped_eye = self.__crop_eye(image, face_model)
-        cv2.imshow("Eye", cropped_eye)
-
         gray = cv2.cvtColor(cropped_eye, cv2.COLOR_BGR2GRAY)
-        thresh = cv2.threshold(gray, self.__black_threshold, 255, cv2.THRESH_BINARY_INV)[1]
-        thresh = cv2.dilate(thresh, None, iterations=2)
+        contours, thresh = self.find_pupil_using_adaptive_threshold(gray)
+        cv2.imshow("Eye", cropped_eye)
         cv2.imshow("Pupil", thresh)
-
-        contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-                                cv2.CHAIN_APPROX_SIMPLE)[-2]
         if len(contours) == 0:
             return (False, cropped_eye.shape)
         largest_contour = max(contours, key=cv2.contourArea)
@@ -29,6 +26,17 @@ class PupilDetector:
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
         return (center, cropped_eye.shape)
+
+    def find_pupil_using_adaptive_threshold(self, image):
+        for black_threshold in range(self.__BLACK_THRESHOLD[0], self.__BLACK_THRESHOLD[1], 3):
+            thresh = cv2.threshold(image, black_threshold, 255, cv2.THRESH_BINARY_INV)[1]
+            thresh = cv2.dilate(thresh, None, iterations=2)
+            contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
+                                        cv2.CHAIN_APPROX_SIMPLE)[-2]
+            if len(contours):
+                return contours, thresh
+
+        return contours, thresh
 
     def update_black_threshold(self, value: int) -> None:
         self.__black_threshold = value

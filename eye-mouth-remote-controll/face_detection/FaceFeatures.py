@@ -11,7 +11,7 @@ class FaceFeatures:
     def get_face_model(self, image) -> FaceModel:
         face_coordonates_rectangles = self.__detector(image, 1)
         if len(face_coordonates_rectangles) != 1:
-            return FaceModel
+            return FaceModel()
         face_rectangle = face_coordonates_rectangles[0]
 
         return FaceModel(face_utils.shape_to_np(self.__predictor(image, face_rectangle)))
