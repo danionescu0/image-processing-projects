@@ -27,7 +27,7 @@ args = vars(argparse.parse_args())
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(args["shape_predictor"])
-face_features = FaceFeatures(detector, predictor)
+face_features = FaceFeatures(detector, predictor, config.resize_image_by_width)
 frame_provider = FrameProviderProcessWrapper(args['video_input'], config.rotate_camera_by)
 pupil_detector = PupilDetector()
 shape_analizer = ShapeAnalizer()
@@ -46,28 +46,28 @@ simple_gui.initialize()
 
 while True:
     key_pressed = cv2.waitKey(1) & 0xFF
-    image = frame_provider.get_last_frame()
-    if image is None:
+    original_image = frame_provider.get_last_frame()
+    if original_image is None:
         continue
-    image = imutils.resize(image, width=config.resize_image_by_width)
+    image = imutils.resize(original_image, width=config.resize_image_by_width)
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     img_gray = cv2.medianBlur(gray_image, 3)
     edges = cv2.Laplacian(img_gray, cv2.CV_8U, ksize=5)
     ret, display_image = cv2.threshold(edges, 80, 255, cv2.THRESH_BINARY_INV)
 
-    face_model = face_features.get_face_model(gray_image)
+    face_model = face_features.get_face_model(original_image)
     if not calibrator.calibrated_model.is_calibrated():
         display_image = simple_gui.write_text(display_image, "No calibration", 2)
-    if not face_model_validator.is_valid(image, face_model):
+    if not face_model_validator.is_valid(original_image, face_model):
         display_image = simple_gui.write_text(display_image, "No face", 1)
         cv2.imshow("Original", display_image)
         continue
     cv2.imshow("Original", display_image)
     if calibrator.supports_calibration(key_pressed):
-        calibrator.calibrate(key_pressed, image, face_model)
+        calibrator.calibrate(key_pressed, original_image, face_model)
         eye_mouth_commands.calibrated_model = calibrator.calibrated_model
         print(calibrator.calibrated_model)
-    coordonates = eye_mouth_commands.get(image, face_model)
+    coordonates = eye_mouth_commands.get(original_image, face_model)
     if coordonates.has_detection():
         command = robot_serial_command_converter.get_from_coordonates(coordonates)
         simple_gui.draw_controls(coordonates.eyes_horizontal_angle, coordonates.mouth_vertical_percent)

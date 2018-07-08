@@ -32,7 +32,7 @@ class SimpleGui:
         cv2.resizeWindow(name, size[0], size[1])
 
     def write_text(self, image, text: str, row: int):
-        cv2.putText(image, text, (20, row * 30), self.__draw_image_font, 0.8, (255, 255, 255), 1, cv2.LINE_AA)
+        cv2.putText(image, text, (20, row * 30), self.__draw_image_font, 0.8, (0, 0, 0), 1, cv2.LINE_AA)
 
         return image
 
@@ -50,7 +50,6 @@ class SimpleGui:
                       (width + 10, height - acceleration_bar_height),
                       (width + self.__ACCELERATION_BAR_WIDTH - 10, height),
                       (107, 29, 74), -1)
-
         cv2.imshow('Wheel', enlarged)
 
     def __get_enlarged_wheel(self, image):
