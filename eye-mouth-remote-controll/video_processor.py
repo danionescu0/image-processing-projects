@@ -31,10 +31,10 @@ face_features = FaceFeatures(detector, predictor)
 frame_provider = FrameProviderProcessWrapper(args['video_input'], config.rotate_camera_by)
 pupil_detector = PupilDetector()
 shape_analizer = ShapeAnalizer()
-face_model_validator = FaceModelValidator(shape_analizer, 70)
+face_model_validator = FaceModelValidator(shape_analizer, 65)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 simple_gui = SimpleGui(config.screen)
-eye_mouth_commands = EyeMouthCommands(pupil_detector, shape_analizer, simple_gui)
+eye_mouth_commands = EyeMouthCommands(pupil_detector, shape_analizer)
 robot_serial_command_converter = RobotSerialCommandsConverter()
 calibrator = Calibrator(pupil_detector, shape_analizer)
 timer = Timer()
@@ -51,14 +51,18 @@ while True:
         continue
     image = imutils.resize(image, width=config.resize_image_by_width)
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.medianBlur(gray_image, 3)
+    edges = cv2.Laplacian(img_gray, cv2.CV_8U, ksize=5)
+    ret, display_image = cv2.threshold(edges, 80, 255, cv2.THRESH_BINARY_INV)
+
     face_model = face_features.get_face_model(gray_image)
-    if not calibrator.calibrated_model.has_eyes_calibration() or not calibrator.calibrated_model.has_mouth_calibration():
-        image = simple_gui.write_text(image, "No calibration", 2)
+    if not calibrator.calibrated_model.is_calibrated():
+        display_image = simple_gui.write_text(display_image, "No calibration", 2)
     if not face_model_validator.is_valid(image, face_model):
-        image = simple_gui.write_text(image, "No face", 1)
-        cv2.imshow("Original", image)
+        display_image = simple_gui.write_text(display_image, "No face", 1)
+        cv2.imshow("Original", display_image)
         continue
-    cv2.imshow("Original", image)
+    cv2.imshow("Original", display_image)
     if calibrator.supports_calibration(key_pressed):
         calibrator.calibrate(key_pressed, image, face_model)
         eye_mouth_commands.calibrated_model = calibrator.calibrated_model
@@ -66,5 +70,6 @@ while True:
     coordonates = eye_mouth_commands.get(image, face_model)
     if coordonates.has_detection():
         command = robot_serial_command_converter.get_from_coordonates(coordonates)
+        simple_gui.draw_controls(coordonates.eyes_horizontal_angle, coordonates.mouth_vertical_percent)
         print(coordonates, command)
         mqtt_connection.send_movement_command(command)

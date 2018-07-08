@@ -18,7 +18,7 @@ class FaceModelValidator:
 
     def __is_face_proportion_right(self, image, model: FaceModel) -> bool:
         face_height = self.__shape_analizer.get_height(model.all_points)
-        image_height, _, _ = image.shape
+        image_height, _ = image.shape[:2]
         minimum_accepted_height = int(image_height * self.__mandatory_face_height_percent / 100)
 
         return face_height >= minimum_accepted_height
@@ -32,6 +32,5 @@ class FaceModelValidator:
                 abs(left_eye_width - right_eye_width) /
                 max(left_eye_width, right_eye_width)
             ) * 100)
-
 
         return percent_difference_in_width <= self.__MAX_PERCENT_DIFFERENCE_IN_EYES_WIDTH
