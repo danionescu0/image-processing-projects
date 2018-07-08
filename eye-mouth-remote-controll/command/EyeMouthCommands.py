@@ -3,20 +3,20 @@ from command.Coordonates import Coordonates
 from calibration.CalibratedModel import CalibratedModel
 from face_detection.FaceModel import FaceModel
 from face_detection.PupilDetector import PupilDetector
-from face_detection.MouthAnalizer import MouthAnalizer
+from face_detection.ShapeAnalizer import ShapeAnalizer
 from SimpleGui import SimpleGui
 
 
 class EyeMouthCommands:
-    def __init__(self, pupil_detector: PupilDetector, mouth_analizer: MouthAnalizer, simple_gui: SimpleGui) -> None:
+    def __init__(self, pupil_detector: PupilDetector, shape_analizer: ShapeAnalizer, simple_gui: SimpleGui) -> None:
         self.__pupil_detector = pupil_detector
-        self.__mouth_analizer = mouth_analizer
+        self.__shape_analizer = shape_analizer
         self.__simple_gui = simple_gui
         self._calibrated_model = CalibratedModel()
 
     def get(self, image, face_model: FaceModel) -> Coordonates:
         pupil_center, eye_shape = self.__pupil_detector.find(image, face_model)
-        mouth_height = self.__mouth_analizer.get_height(face_model)
+        mouth_height = self.__shape_analizer.get_height(face_model.get_mouth())
         if not pupil_center or not self.calibrated_model.has_mouth_calibration() \
                 or not self.calibrated_model.has_eyes_calibration():
             return Coordonates()

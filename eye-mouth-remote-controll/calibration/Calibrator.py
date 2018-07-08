@@ -1,7 +1,7 @@
 from calibration.CalibratedModel import CalibratedModel
 from face_detection.PupilDetector import PupilDetector
 from face_detection.FaceModel import FaceModel
-from face_detection.MouthAnalizer import MouthAnalizer
+from face_detection.ShapeAnalizer import ShapeAnalizer
 
 
 class Calibrator:
@@ -12,9 +12,9 @@ class Calibrator:
         82: 'mouth_opened'
     }
 
-    def __init__(self, pupil_detector: PupilDetector, mouth_analizer: MouthAnalizer) -> None:
+    def __init__(self, pupil_detector: PupilDetector, shape_analizer: ShapeAnalizer) -> None:
         self.__pupil_detector = pupil_detector
-        self.__mouth_analizer = mouth_analizer
+        self.__shape_analizer = shape_analizer
         self.calibrated_model = CalibratedModel()
 
     def supports_calibration(self, key: int) -> bool:
@@ -37,7 +37,7 @@ class Calibrator:
             self.calibrated_model.eye_max_right = center[0]
 
     def __calibrate_mouth(self, which: str, face_model: FaceModel):
-        mouth_height = self.__mouth_analizer.get_height(face_model)
+        mouth_height = self.__shape_analizer.get_height(face_model.get_mouth())
         if which == 'mounth_closed':
             self.calibrated_model.mouth_closed_height = mouth_height
         elif which == 'mouth_opened':

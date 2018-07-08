@@ -1,7 +1,5 @@
 # Eye mouth remote controll
 
-*Work in progress*
-
 
 This project takes a video stream identify the eyes and mouth and enable their coordonates to be used as a remote controll
 
@@ -52,3 +50,31 @@ python3 video_processor.py -p path_to_unarchived_dlib_face_model -v /dev/video0
 ````
 
 Where /dev/video0 is your webcam or another vide device, or a video recording like mp4
+
+4. Position your face in front of the camera.
+
+The face should occupy 70% of the image height, and the head must be straight
+
+5. Calibrate the eyes, mouth coordonates using arrow keys.
+
+If the face is not in the right position (see above) you will see a "No face" text on the video stream
+
+Look to your maximum right and press right arrow key
+
+Look to your maximum left and press left arrow key
+
+Open your mouth and press up key
+
+Close your mouth and press down key
+
+6. Using the remote
+
+Now the left, right (steer) and stop, start (speed) are calibrated.
+
+While your face is in the correct position the steering wheel will rotate on the screen, 
+
+and the robot commands will be issued through mqtt. For more information please visit: ttps://github.com/danionescu0/robot-camera-platform
+
+
+## Troubleshoot:
+

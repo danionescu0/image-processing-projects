@@ -10,7 +10,8 @@ from calibration.Calibrator import Calibrator
 from command.EyeMouthCommands import EyeMouthCommands
 from face_detection.PupilDetector import PupilDetector
 from face_detection.FaceFeatures import FaceFeatures
-from face_detection.MouthAnalizer import MouthAnalizer
+from face_detection.ShapeAnalizer import ShapeAnalizer
+from face_detection.FaceModelValidator import FaceModelValidator
 from robot_speed_angle.MqttConnection import MqttConnection
 from robot_speed_angle.RobotSerialCommandsConverter import RobotSerialCommandsConverter
 from video.FrameProviderProcessWrapper import FrameProviderProcessWrapper
@@ -29,12 +30,13 @@ predictor = dlib.shape_predictor(args["shape_predictor"])
 face_features = FaceFeatures(detector, predictor)
 frame_provider = FrameProviderProcessWrapper(args['video_input'], config.rotate_camera_by)
 pupil_detector = PupilDetector()
-mouth_analizer = MouthAnalizer()
+shape_analizer = ShapeAnalizer()
+face_model_validator = FaceModelValidator(shape_analizer, 70)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 simple_gui = SimpleGui(config.screen)
-eye_mouth_commands = EyeMouthCommands(pupil_detector, mouth_analizer, simple_gui)
+eye_mouth_commands = EyeMouthCommands(pupil_detector, shape_analizer, simple_gui)
 robot_serial_command_converter = RobotSerialCommandsConverter()
-calibrator = Calibrator(pupil_detector, mouth_analizer)
+calibrator = Calibrator(pupil_detector, shape_analizer)
 timer = Timer()
 
 frame_provider.start()
@@ -52,7 +54,7 @@ while True:
     face_model = face_features.get_face_model(gray_image)
     if not calibrator.calibrated_model.has_eyes_calibration() or not calibrator.calibrated_model.has_mouth_calibration():
         image = simple_gui.write_text(image, "No calibration", 2)
-    if not face_model.has_detection():
+    if not face_model_validator.is_valid(image, face_model):
         image = simple_gui.write_text(image, "No face", 1)
         cv2.imshow("Original", image)
         continue

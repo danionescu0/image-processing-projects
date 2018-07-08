@@ -36,7 +36,7 @@ class PupilDetector:
         return contours, thresh
 
     def __crop_eye(self, image, face_model: FaceModel):
-        eye = face_model.get_eye()
+        eye = face_model.get_left_eye()
         mask = np.full(image.shape, 255, dtype=np.uint8)
         channel_count = image.shape[2]
         ignore_mask_color = (0,) * channel_count
