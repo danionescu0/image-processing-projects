@@ -5,7 +5,6 @@ resize_image_by_width = 800
 rotate_camera_by = 0
 
 # screen resolution
-
 screen = (1600, 1200)
 
 # mqtt connection details

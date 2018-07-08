@@ -10,6 +10,7 @@ from calibration.Calibrator import Calibrator
 from command.EyeMouthCommands import EyeMouthCommands
 from face_detection.PupilDetector import PupilDetector
 from face_detection.FaceFeatures import FaceFeatures
+from face_detection.MouthAnalizer import MouthAnalizer
 from robot_speed_angle.MqttConnection import MqttConnection
 from robot_speed_angle.RobotSerialCommandsConverter import RobotSerialCommandsConverter
 from video.FrameProviderProcessWrapper import FrameProviderProcessWrapper
@@ -26,14 +27,14 @@ args = vars(argparse.parse_args())
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(args["shape_predictor"])
 face_features = FaceFeatures(detector, predictor)
-frame_provider = FrameProviderProcessWrapper(args['video_input'])
+frame_provider = FrameProviderProcessWrapper(args['video_input'], config.rotate_camera_by)
 pupil_detector = PupilDetector()
-draw_image_font = cv2.FONT_HERSHEY_SIMPLEX
+mouth_analizer = MouthAnalizer()
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 simple_gui = SimpleGui(config.screen)
-eye_mouth_commands = EyeMouthCommands(pupil_detector, simple_gui)
+eye_mouth_commands = EyeMouthCommands(pupil_detector, mouth_analizer, simple_gui)
 robot_serial_command_converter = RobotSerialCommandsConverter()
-calibrator = Calibrator(pupil_detector)
+calibrator = Calibrator(pupil_detector, mouth_analizer)
 timer = Timer()
 
 frame_provider.start()
@@ -47,15 +48,15 @@ while True:
     if image is None:
         continue
     image = imutils.resize(image, width=config.resize_image_by_width)
-    image = imutils.rotate(image, config.rotate_camera_by)
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     face_model = face_features.get_face_model(gray_image)
+    if not calibrator.calibrated_model.has_eyes_calibration() or not calibrator.calibrated_model.has_mouth_calibration():
+        image = simple_gui.write_text(image, "No calibration", 2)
     if not face_model.has_detection():
-        cv2.putText(image, "No face", (20, 20), draw_image_font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        image = simple_gui.write_text(image, "No face", 1)
         cv2.imshow("Original", image)
         continue
     cv2.imshow("Original", image)
-
     if calibrator.supports_calibration(key_pressed):
         calibrator.calibrate(key_pressed, image, face_model)
         eye_mouth_commands.calibrated_model = calibrator.calibrated_model

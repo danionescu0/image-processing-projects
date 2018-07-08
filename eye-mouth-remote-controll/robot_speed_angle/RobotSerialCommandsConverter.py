@@ -12,7 +12,7 @@ class RobotSerialCommandsConverter:
     def get_from_coordonates(self, coordonates: Coordonates) -> str:
         return self.MOTOR_COMMAND.format(
             self.__get_converted_direction(coordonates.eyes_horizontal_angle),
-            self.__get_converted_power(75, True)
+            self.__get_converted_power(coordonates.mouth_vertical_percent, True)
         )
 
     def __get_converted_power(self, percent_power: int, forward: bool) -> str:

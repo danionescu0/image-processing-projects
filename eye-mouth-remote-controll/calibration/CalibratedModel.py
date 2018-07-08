@@ -9,6 +9,9 @@ class CalibratedModel:
     def has_eyes_calibration(self) -> bool:
         return self.eye_max_right is not None and self.eye_max_left is not None
 
+    def has_mouth_calibration(self) -> bool:
+        return self.mouth_opened_height is not None and self.mouth_closed_height is not None
+
     def __repr__(self) -> str:
         return 'Calibrated Model: Eye left: {0}, Eye right: {1}, Mouth closed: {2}, Mouth opened: {3}'\
             .format(self.eye_max_left, self.eye_max_right, self.mouth_closed_height, self.mouth_opened_height)
