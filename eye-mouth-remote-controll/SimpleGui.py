@@ -14,6 +14,7 @@ class SimpleGui:
         self.__wheel_img = None
         self.__draw_image_font = cv2.FONT_HERSHEY_SIMPLEX
         self.__ACCELERATION_BAR_WIDTH = 150
+        self.image = None
 
     def initialize(self):
         full_image_size = int(min(self.__screen[0], self.__screen[1]) / 2)
@@ -31,10 +32,15 @@ class SimpleGui:
         cv2.moveWindow(name, position[0], position[1])
         cv2.resizeWindow(name, size[0], size[1])
 
-    def write_text(self, image, text: str, row: int):
-        cv2.putText(image, text, (20, row * 30), self.__draw_image_font, 0.8, (0, 0, 0), 1, cv2.LINE_AA)
+    def write_text_on_main(self, text: str, row: int):
+        cv2.putText(self.image, text, (20, row * 30), self.__draw_image_font, 0.8, (0, 0, 0), 1, cv2.LINE_AA)
 
-        return image
+    def display_main_img(self):
+        gray_image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        img_blur = cv2.medianBlur(gray_image, 3)
+        edges = cv2.Laplacian(img_blur, cv2.CV_8U, ksize=5)
+        _, display_image = cv2.threshold(edges, 80, 255, cv2.THRESH_BINARY_INV)
+        cv2.imshow("Original", self.image)
 
     def draw_controls(self, angle: int, speed: int):
         image_angle = angle

@@ -1,5 +1,5 @@
 #image is resized by width before processing to increase performance (speed)
-resize_image_by_width = 600
+resize_image_by_width = 400
 
 # angle to rotate camera in degreeds
 rotate_camera_by = 0
