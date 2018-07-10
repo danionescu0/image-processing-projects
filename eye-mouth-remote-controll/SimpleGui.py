@@ -10,7 +10,7 @@ from MathUtils import MathUtils
 class SimpleGui:
     def __init__(self, screen: Tuple[int, int]):
         self.__screen = screen
-        self.__wheel_path = './steering_wheel.png'
+        self.__wheel_path = './steering_wheel.jpg'
         self.__wheel_img = None
         self.__draw_image_font = cv2.FONT_HERSHEY_SIMPLEX
         self.__ACCELERATION_BAR_WIDTH = 150
@@ -25,7 +25,7 @@ class SimpleGui:
         self.__create_window('Pupil', (full_image_size + 100, 100 + eye_height_size), (eye_width_size, eye_height_size))
         self.__create_window('Wheel', (full_image_size + 100, 150 + eye_height_size * 2), (eye_width_size, eye_width_size))
         self.__wheel_img = cv2.imread(self.__wheel_path)
-        cv2.imshow('Wheel', self.__get_enlarged_wheel(self.__wheel_img))
+        cv2.imshow('Wheel', self.__get_cropped_wheel(self.__wheel_img))
 
     def __create_window(self, name: str, position: tuple, size: tuple):
         cv2.namedWindow(name, cv2.WINDOW_NORMAL)
@@ -49,14 +49,21 @@ class SimpleGui:
         elif angle > 90 and angle <= 180:
             image_angle = MathUtils.remap(angle, 90, 180, 0, -90)
         image = imutils.rotate(self.__wheel_img, image_angle)
+
         height, width, _ = image.shape
-        enlarged = self.__get_enlarged_wheel(image)
+        cropped = self.__get_cropped_wheel(image)
+        enlarged = self.__get_enlarged_wheel(cropped)
         acceleration_bar_height = int(speed / 100 * height)
         cv2.rectangle(enlarged,
                       (width + 10, height - acceleration_bar_height),
                       (width + self.__ACCELERATION_BAR_WIDTH - 10, height),
                       (107, 29, 74), -1)
         cv2.imshow('Wheel', enlarged)
+
+    def __get_cropped_wheel(self, image):
+        height, width, _ = image.shape
+
+        return image[110:height - 110, 110:width - 110]
 
     def __get_enlarged_wheel(self, image):
         height, width, color = image.shape
