@@ -40,7 +40,7 @@ class SimpleGui:
         img_blur = cv2.medianBlur(gray_image, 3)
         edges = cv2.Laplacian(img_blur, cv2.CV_8U, ksize=5)
         _, display_image = cv2.threshold(edges, 80, 255, cv2.THRESH_BINARY_INV)
-        cv2.imshow("Original", self.image)
+        cv2.imshow("Original", display_image)
 
     def draw_controls(self, angle: int, speed: int):
         image_angle = angle
@@ -50,8 +50,8 @@ class SimpleGui:
             image_angle = MathUtils.remap(angle, 90, 180, 0, -90)
         image = imutils.rotate(self.__wheel_img, image_angle)
 
-        height, width, _ = image.shape
         cropped = self.__get_cropped_wheel(image)
+        height, width, _ = cropped.shape
         enlarged = self.__get_enlarged_wheel(cropped)
         acceleration_bar_height = int(speed / 100 * height)
         cv2.rectangle(enlarged,
