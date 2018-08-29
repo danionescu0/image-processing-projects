@@ -49,7 +49,6 @@ class SimpleGui:
         elif angle > 90 and angle <= 180:
             image_angle = MathUtils.remap(angle, 90, 180, 0, -90)
         image = imutils.rotate(self.__wheel_img, image_angle)
-
         cropped = self.__get_cropped_wheel(image)
         height, width, _ = cropped.shape
         enlarged = self.__get_enlarged_wheel(cropped)
@@ -58,6 +57,7 @@ class SimpleGui:
                       (width + 10, height - acceleration_bar_height),
                       (width + self.__ACCELERATION_BAR_WIDTH - 10, height),
                       (107, 29, 74), -1)
+        self.__show_acceleration_percent(enlarged, speed)
         cv2.imshow('Wheel', enlarged)
 
     def __get_cropped_wheel(self, image):
@@ -72,3 +72,9 @@ class SimpleGui:
         enlarged[:height, :width, :color] = image
 
         return enlarged
+
+    def __show_acceleration_percent(self, image, percent: int):
+        text = str(percent) + '%'
+        height, width, _ = image.shape
+        cv2.putText(image, text, (width - self.__ACCELERATION_BAR_WIDTH, 40),
+                    self.__draw_image_font, 1.7, (0, 0, 0), 3, cv2.LINE_AA)

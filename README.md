@@ -4,7 +4,9 @@ Projects:
 
 2. [Person monitor](#Person-monitor)
 
-3. [Eye mouth remote controll]](#Eye-mouth-remote-controll)
+3. [Eye mouth remote controll](#Eye-mouth-remote-controll)
+
+Video demo: https://www.youtube.com/watch?v=qufa4i4dOds&index=36&list=PLl_Vyjgh2HiI5V5EZHxj4Z3bFgkz9-2Z-&t=5s
 
 # Face recognition wrapper
 
@@ -44,7 +46,7 @@ The library is well suited for a development board like Raspberry pi and for a f
 pip install -r requirements.txt
 ````
 
-* Install mongodb and ensure and start it
+* Install mongodb 
 ````
 sudo apt-get install mongodb
 ````
@@ -60,7 +62,7 @@ sudo apt-get install mosquitto
 For more information on how to set user and password check this url: http://www.steves-internet-guide.com/mqtt-username-password-example/
 
 ### Running the project
-activate virual environment if needed
+activate virtual environment if needed
 
 * Start the web server
 ````
@@ -73,11 +75,13 @@ python webserver.py
 python video_processor.py --camera_device 0
 ````
 Camera parameter is optional and it's mapped to the camera resource. It can be a raspberry pi camera or a webcam:
-0 means it's mapped with /dev/video0
+0 means it's mapped with /dev/video0.
+
+If you're using a raspberry pi camera and have picamera module installed you can omit the --camera_device parameter, if you're using a webcam you need to specify the device number
 
 to start the video in debug mode (display the video source in a window)
 ````
-python video_processor.py --show-video --camera_device 0
+python video_processor.py --show-video --camera_device 0 --show-video
 ````
 
 ### Creating users, deleting users, adding faces to users, deleting faces
@@ -86,7 +90,7 @@ HTTP API:
 
 - create a person profile
 
-- uploade a photo for the person
+- upload a photo for the person
 
 - delete a person photo
 
@@ -260,6 +264,7 @@ email = {
 
 # Eye mouth remote controll
 
+Video demo: https://www.youtube.com/watch?v=qufa4i4dOds&index=36&list=PLl_Vyjgh2HiI5V5EZHxj4Z3bFgkz9-2Z-&t=5s
 
 This project takes a video stream identify the eyes and mouth and enable their coordonates to be used as a remote controll
 
@@ -338,4 +343,4 @@ and the robot commands will be issued through mqtt. For more information please 
 
 ## Troubleshoot:
 
-eo0 is your webcam or another vide device, or a video recording like mp4
+where /dev/video0 is your webcam or another vide device, or a video recording like mp4

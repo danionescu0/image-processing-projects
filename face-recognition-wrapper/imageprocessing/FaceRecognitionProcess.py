@@ -2,7 +2,6 @@ from multiprocessing import Process, Queue
 
 from imageprocessing.FaceRecognition import FaceRecognition
 
-
 class FaceRecognitionProcess(Process):
     def __init__(self, face_recognition: FaceRecognition, input_queue: Queue, output_queue: Queue):
         Process.__init__(self)

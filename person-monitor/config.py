@@ -1,26 +1,28 @@
+# email credentials, will be used to send an email
 email = {
-    'sender_addr': '',
-    'sender_password': '',
-    'notified_address': '',
+    'sender_addr': 'replace_with_own',
+    'sender_password': 'replace_with_own',
+    'notified_address': 'replace_with_own',
     'min_time_between_emails': 50,
     'enabled': True
 }
 
+# devicehub api_key, project etc, for logging the data as a devicehub sensor
 devicehub = {
-    'api_key': '',
-    'device_uuid': '',
-    'project_id': '',
+    'api_key': 'replace_with_own',
+    'device_uuid': 'replace_with_own',
+    'project_id': 'replace_with_own',
     'user_id_to_sensor_mapping': {
-        '23': 'Dan'
+        'replace_with_own': 'replace_with_own'
     },
     'enabled': True
 }
 
 mqtt = {
-    'host': '192.168.0.105',
+    'host': '192.168.0.100',
     'port': 1883, # mosquitto default port
-    'user': 'user',
-    'password': 'your_password'
+    'user': 'username',
+    'password': 'password'
 }
 
 mongodb_uri = 'mongodb://localhost:27017/'

@@ -3,7 +3,7 @@ from face_detection.ShapeAnalizer import ShapeAnalizer
 
 
 class FaceModelValidator:
-    __MAX_PERCENT_DIFFERENCE_IN_EYES_WIDTH = 5
+    __MAX_PERCENT_DIFFERENCE_IN_EYES_WIDTH = 7
 
     def __init__(self, shape_analizer: ShapeAnalizer, mandatory_face_height_percent: int) -> None:
         self.__shape_analizer = shape_analizer

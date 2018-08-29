@@ -1,5 +1,6 @@
 # Eye mouth remote controll
 
+Video demo: https://www.youtube.com/watch?v=qufa4i4dOds&index=36&list=PLl_Vyjgh2HiI5V5EZHxj4Z3bFgkz9-2Z-&t=5s
 
 This project takes a video stream identify the eyes and mouth and enable their coordonates to be used as a remote controll
 
@@ -78,3 +79,4 @@ and the robot commands will be issued through mqtt. For more information please 
 
 ## Troubleshoot:
 
+where /dev/video0 is your webcam or another vide device, or a video recording like mp4

@@ -36,7 +36,7 @@ The library is well suited for a development board like Raspberry pi and for a f
 pip install -r requirements.txt
 ````
 
-* Install mongodb and ensure and start it
+* Install mongodb 
 ````
 sudo apt-get install mongodb
 ````
@@ -52,7 +52,7 @@ sudo apt-get install mosquitto
 For more information on how to set user and password check this url: http://www.steves-internet-guide.com/mqtt-username-password-example/
 
 ### Running the project
-activate virual environment if needed
+activate virtual environment if needed
 
 * Start the web server
 ````
@@ -65,11 +65,13 @@ python webserver.py
 python video_processor.py --camera_device 0
 ````
 Camera parameter is optional and it's mapped to the camera resource. It can be a raspberry pi camera or a webcam:
-0 means it's mapped with /dev/video0
+0 means it's mapped with /dev/video0.
+
+If you're using a raspberry pi camera and have picamera module installed you can omit the --camera_device parameter, if you're using a webcam you need to specify the device number
 
 to start the video in debug mode (display the video source in a window)
 ````
-python video_processor.py --show-video --camera_device 0
+python video_processor.py --show-video --camera_device 0 --show-video
 ````
 
 ### Creating users, deleting users, adding faces to users, deleting faces
@@ -78,7 +80,7 @@ HTTP API:
 
 - create a person profile
 
-- uploade a photo for the person
+- upload a photo for the person
 
 - delete a person photo
 
