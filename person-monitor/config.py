@@ -18,6 +18,13 @@ devicehub = {
     'enabled': True
 }
 
+text_to_speech = {
+    'host': 'http://ip:80',
+    'user': 'test_user',
+    'password' : 'test_pass',
+    'enabled': True
+}
+
 mqtt = {
     'host': '192.168.0.100',
     'port': 1883, # mosquitto default port

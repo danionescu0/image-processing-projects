@@ -175,7 +175,7 @@ sudo modprobe bcm2835-v4l2
 
 
 In this project we're going to implement a real time person monitor with email notification,
-text to speech etc.
+text to speech and DeviceHub integrations.
 
 We're going to receive face notification from "Face recognition wrapper" over MQTT and react
 to them by:
@@ -186,7 +186,6 @@ to them by:
 
 - track known persons on a graph using free IOT platforms like devicehub
 
-- configure known persons, email notification etc etc in a graphical UI
 
 
 ### Installing dependencies & configure
@@ -195,7 +194,7 @@ to them by:
 
 * Details about sending email with gmail: http://stackabuse.com/how-to-send-emails-with-gmail-using-python/
 
-* Install python requirements:
+* Install python requirements (use a virtualenv)
 ````
 pip install -r requirements.txt
 ````
@@ -260,6 +259,28 @@ email = {
     'min_time_between_emails': interval_in_seconds,
     'enabled': True
 }
+````
+
+
+* Configure text to speech
+
+````
+text_to_speech = {
+    'host': 'http://ip_address',
+    'user': 'user',
+    'password' : 'pass',
+    'enabled': True
+}
+````
+
+As a remote speaker we'll be using the following project: https://www.instructables.com/id/How-to-Build-a-Text-to-Speech-IOT-Speaker/
+
+After setting up the project configure, host, user and password
+
+* Run the project:
+
+````
+python background.py
 ````
 
 # Eye mouth remote controll
