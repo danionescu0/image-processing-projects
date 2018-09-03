@@ -1,4 +1,4 @@
-#image is resized by width before processing to increase performance (speed)
+#image is resized by width before processing to increase performance
 resize_image_by_width = 400
 
 # angle to rotate camera in degreeds

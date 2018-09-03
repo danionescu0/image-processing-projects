@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+    python-server:
+        build: ./python-server/
+        privileged: true
+        devices:
+          - "/dev/video0:/dev/video0"
+        volumes:
+          - /var/log:/var/log
+        depends_on:
+            - mosquitto
+            - mongodb
+
+    mosquitto:
+        image: mosquitto
+        build: ./mosquitto/
+        ports:
+            - "1883:1883"
+
+    mongodb:
+        image: dhermanns/rpi-mongo
+        ports:
+            - "27017:27017"

@@ -19,7 +19,7 @@ known persons and notify what has found using MQTT.
 
 - face matching against known persons faces
 
-- it uses a configurable number of processing making use of all the cores in the system 
+- it uses a configurable number of processes to make use of all the cores in the system 
 
 - HTTP API to creata, add delete user and faces
 
@@ -37,7 +37,15 @@ The library is well suited for a development board like Raspberry pi and for a f
 [Imutils](https://github.com/jrosebr1/imutils)
 
 
-### Installing dependencies & configure
+### Installing with docker and docker-compose (work in progress)
+1. Install docker and docker compose
+  
+About docker installation: https://www.raspberrypi.org/blog/docker-comes-to-raspberry-pi/
+About docker-compose installation: https://www.berthon.eu/2017/getting-docker-compose-on-raspberry-pi-arm-the-easy-way/
+
+2. To be continued
+
+### Manually installing dependencies & configure
 
 * Edit config.py and configure mqtt, and other settings if needed
 
@@ -281,7 +289,7 @@ After setting up the project configure, host, user and password
 
 ````
 python background.py
-````
+````face
 
 # Eye mouth remote controll
 
