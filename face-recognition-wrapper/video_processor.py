@@ -78,8 +78,9 @@ while not cv2.waitKey(30) & 0xFF == ord('q'):
     image_with_detection, faces = face_recognition_process_wrapper.get_result()
     if image_with_detection is not None and len(faces) > 0:
         face_notificator.notify_found(faces, image_encoder.encode_numpy_image(image_with_detection))
-        last_identified = image_debug.enhance_with_debug(image_with_detection, faces)
-        cv2.imshow('last_capture', last_identified)
+        if args.video:
+            last_identified = image_debug.enhance_with_debug(image_with_detection, faces)
+            cv2.imshow('last_capture', last_identified)
     if args.video:
         cv2.imshow('frame', frame)
 

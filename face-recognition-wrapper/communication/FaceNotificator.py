@@ -1,12 +1,10 @@
 import os
 import json
-from typing import Optional
 from typing import List
 
 from communication.MqttConnection import MqttConnection
 from communication.Notification import Notification
 from UserRepository import UserRepository
-from model.User import User
 from model.DetectedFace import DetectedFace
 
 

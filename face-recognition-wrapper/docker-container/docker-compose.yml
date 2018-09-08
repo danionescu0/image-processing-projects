@@ -11,12 +11,14 @@ services:
         depends_on:
             - mosquitto
             - mongodb
+        ports:
+            - "8080:80"
 
     mosquitto:
         image: mosquitto
         build: ./mosquitto/
         ports:
-            - "1883:1883"
+            - "1884:1884"
 
     mongodb:
         image: dhermanns/rpi-mongo

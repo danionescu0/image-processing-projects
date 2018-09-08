@@ -1,10 +1,11 @@
-FROM generalaardvark/rpi-python35
-
-RUN apt-get update && apt-get install -y git ca-certificates python-opencv
+FROM resin/rpi-raspbian:latest
 
 RUN apt-get update
 RUN apt-get upgrade
+
+# install build depedencies
 RUN apt-get install build-essential \
+    ca-certificates \
     cmake \
     gfortran \
     git \
@@ -24,77 +25,84 @@ RUN apt-get install build-essential \
     python3-dev \
     python3-numpy \
     python3-pip \
-    zip
+    libgtk-3-dev \
+    zip \
+    libtiff5-dev \
+    libjasper-dev \
+    libpng12-dev \
+    libv4l-dev \
+    libxvidcore-dev \
+    libx264-dev \
+    libatlas-base-dev \
+    libraspberrypi0 \
+    unzip
+
 RUN apt-get clean
+RUN pip3 install numpy
 
-RUN pip3 install --upgrade
-RUN apt-get install python3-picamera
-RUN pip3 install -U pip setuptools
+WORKDIR opencv
+RUN wget -O opencv.zip https://github.com/Itseez/opencv/archive/3.3.0.zip
+RUN unzip opencv.zip
+RUN wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/3.3.0.zip
+RUN unzip opencv_contrib.zip
 
+
+WORKDIR opencv-3.3.0
+RUN mkdir build
+WORKDIR build
+RUN  cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D CMAKE_INSTALL_PREFIX=/usr/local \
+    -D OPENCV_EXTRA_MODULES_PATH=/opencv/opencv_contrib-3.3.0/modules \
+    -D ENABLE_NEON=ON \
+    -D ENABLE_VFPV3=ON \
+    -D BUILD_TESTS=OFF \
+    -D INSTALL_PYTHON_EXAMPLES=OFF \
+    -D BUILD_EXAMPLES=OFF ..
+
+#CONF_SWAPSIZE=102
+RUN apt-get install -y dphys-swapfile
+# Just in case the default is too small adjust it size
+RUN sed -i 's/CONF_SWAPSIZE=100$/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile
+RUN /etc/init.d/dphys-swapfile stop
+RUN /etc/init.d/dphys-swapfile start
+
+RUN make -j3
+RUN make install
+RUN ldconfig
+# Clean up and reduce the image size by deleting files
+WORKDIR /
+RUN rm -rf /opencv
+
+RUN pip3 install --upgrade setuptools
+
+#install dlib and face_recognition library
 WORKDIR /root
-RUN git clone -b 'v19.6' --single-branch https://github.com/davisking/dlib.git 
+RUN git clone -b 'v19.6' --single-branch https://github.com/davisking/dlib.git
 WORKDIR /root/dlib
 RUN python3 setup.py install --compiler-flags "-mfpu=neon"
 RUN pip3 install face_recognition
 
+RUN pip3 install picamera
 
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends apt-utils \
-	# install necessary libraries \
-	&& apt-get -qy install \
-		libtiff5-dev \
-		libjasper-dev \
-		libpng12-dev \
-		libv4l-dev \
-		libxvidcore-dev \
-		libx264-dev \
-		libatlas-base-dev \
-		python2.7-dev \
-		python-pip \
-		python-numpy \
-		libraspberrypi0 \
-		unzip \
-	# cleanup apt \
-	&& apt-get purge -y --auto-remove \
-	&& rm -rf /var/lib/apt/lists/*
-
-ARG OPENCV_VERSION=3.3.1
-ENV OPENCV_VERSION $OPENCV_VERSION
-
-	# download latest source & contrib
-RUN	cd /tmp \
-	&& wget -c -N -nv -O opencv.zip https://github.com/opencv/opencv/archive/$OPENCV_VERSION.zip \
-	&& unzip opencv.zip \
-	&& wget -c -N -nv -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/$OPENCV_VERSION.zip \
-	&& unzip opencv_contrib.zip \
-	# build opencv \
-	&& cd /tmp/opencv-$OPENCV_VERSION \
-	&& mkdir build \
-	&& cd build \
-	&& cmake -D CMAKE_BUILD_TYPE=RELEASE \
-		-D CMAKE_INSTALL_PREFIX=/usr/local \
-		-D INSTALL_C_EXAMPLES=ON \
-		-D BUILD_PYTHON_SUPPORT=ON \
-		-D BUILD_NEW_PYTHON_SUPPORT=ON \
-		-D INSTALL_PYTHON_EXAMPLES=ON \
-		-D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv_contrib-$OPENCV_VERSION/modules \
-		-D BUILD_EXAMPLES=ON .. \
-	&& make -j4  \
-	&& make \
-	&& make install\
-	# ldconfig && \
-	&& make clean \
-	# cleanup source \
-	&& cd / \
-	&& rm -rf /tmp/* \
-	&& pip3 install imutils
-
-
+#install project
 WORKDIR /root
 RUN git clone https://github.com/danionescu0/image-processing-projects.git
 COPY ./config.py /root/image-processing-projects/face-recognition-wrapper/config.py
 COPY ./requirements.txt /root/image-processing-projects/face-recognition-wrapper/requirements.txt
 RUN pip3 install -qr /root/image-processing-projects/face-recognition-wrapper/requirements.txt
 
-CMD ["python3", "/root/image-processing-projects/face-recognition-wrapper/video_processor.py"]
+#strip typing from python 3.5 because we're using a python 3.4 version
+RUN sed -i "s/from typing import List//g" $(find /root/image-processing-projects -type f  -name '*.py')
+RUN sed -i "s/from typing import Callable//g" $(find /root/image-processing-projects -type f  -name '*.py')
+RUN sed -i "s/from typing import Optional//g" $(find /root/image-processing-projects -type f  -name '*.py')
+RUN sed -i "s/List\[DetectedFace\]/list/g" $(find /root/image-processing-projects -type f  -name '*.py')
+RUN sed -i "s/Callable\[\[codecs.StreamReader\], None\]/object/g" $(find /root/image-processing-projects -type f  -name '*.py')
+RUN sed -i "s/Optional\[User\]/object/g" $(find /root/image-processing-projects -type f  -name '*.py')
+RUN sed -i "s/List\[str\]/list/g" $(find /root/image-processing-projects -type f  -name '*.py')
+RUN sed -i "s/List\[User\]/list/g" $(find /root/image-processing-projects -type f  -name '*.py')
+
+#run the project
+CMD ["python3", "/root/image-processing-projects/face-recognition-wrapper/video_processor.py --camera_device 0"]
 CMD ["python3", "/root/image-processing-projects/face-recognition-wrapper/webserver.py"]
+
+EXPOSE 8080

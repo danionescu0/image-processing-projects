@@ -79,7 +79,7 @@ If you're using a raspberry pi camera and have picamera module installed you can
 
 to start the video in debug mode (display the video source in a window)
 ````
-python video_processor.py --show-video --camera_device 0 --show-video
+python video_processor.py --show-video --camera_device 0 
 ````
 
 ### Creating users, deleting users, adding faces to users, deleting faces
@@ -141,7 +141,10 @@ GET parameters:
 
 ````
 sudo apt-get install mosquitto-clients
-mosquitto_sub -h ip_or_hostname -p 1883 -d -t faces/found
+mosquitto_sub -h ip_or_hostname -p 1884 -d -t faces
+
+# or with username and password
+mosquitto_sub -h ip_or_hostname -u username -P password -p 1884 -d -t faces
 ````
 
 * Example for MQTT notification of face found:
