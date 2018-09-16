@@ -59,7 +59,6 @@ RUN  cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D INSTALL_PYTHON_EXAMPLES=OFF \
     -D BUILD_EXAMPLES=OFF ..
 
-#CONF_SWAPSIZE=102
 RUN apt-get install -y dphys-swapfile
 # Just in case the default is too small adjust it size
 RUN sed -i 's/CONF_SWAPSIZE=100$/CONF_SWAPSIZE=1024/' /etc/dphys-swapfile

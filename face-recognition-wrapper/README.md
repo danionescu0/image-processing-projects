@@ -11,33 +11,74 @@ known persons and notify what has found using MQTT.
 
 - it uses a configurable number of processes to make use of all the cores in the system 
 
-- HTTP API to creata, add delete user and faces
+- HTTP API to create, add delete user and faces
 
 - MQTT notifications with face coordonates, person id (if found), and encoded image
 
 
 The library is well suited for a development board like Raspberry pi and for a face tracking and face recognition.
 
-#### Libraries used (special thanks) for image processing
 
-[Opencv](https://github.com/opencv)
-
-[Face recognition](https://github.com/ageitgey/face_recognition)
-
-[Imutils](https://github.com/jrosebr1/imutils)
-
-
-### Installing with docker and docker-compose (work in progress)
+### Installing with docker and docker-compose
 1. Install docker and docker compose
   
-About docker installation: https://www.raspberrypi.org/blog/docker-comes-to-raspberry-pi/
-About docker-compose installation: https://www.berthon.eu/2017/getting-docker-compose-on-raspberry-pi-arm-the-easy-way/
+docker: curl -sSL https://get.docker.com | sh
+docker compose: https://medium.freecodecamp.org/the-easy-way-to-set-up-docker-on-a-raspberry-pi-7d24ced073ef
 
-2. To be continued
+2. Clone project:
+````
+git clone https://github.com/danionescu0/image-processing-projects
+````
+3. Go to docker folder:
+````
+cd image-processing-projects/face-recognition-wrapper
+````
+
+4. Edit ./moquitto/Dockerfile and change the default username and password
+
+Edit ./python-server/config.py and configure mosquitto username, password, and change any parameters if needed
+
+5. Ensure /dev/video0 is available on the machine
+
+If not try to connect a USB camera, or if you're using a Raspberry PI with the pi camera try the commad:
+````
+sudo modprobe bcm2835-v4l2
+````
+This will mount /dev/video0
+
+If your video source is other than /dev/vide0 you'll need to change:
+- ./python-server/Dockerfile and replace
+
+````
+CMD ["python3", "video_processor.py", "--camera_device", "0"]
+````
+
+0 with whatever your camera is mounted on ex: /dev/video2 will mean "2".
+
+- ./docker-compose.yml and replace /dev/video0 with whatever you have
+
+5. Build the containers
+````
+docker-compose build
+````
+
+6. Run the containers
+
+````
+docker-compose up
+````
+
+7. (Optional) Use CURL to create a list of profiles. You can find the CRUD request description below
+
+8. (Optional) Configure port forwarding in your router to access the resources from the internet 
+  Warning this is not secured yet
+ 
+9. Receive notification of persons (maybe use person-monitor project)
+
 
 ### Manually installing dependencies & configure
 
-* Edit config.py and configure mqtt, and other settings if needed
+* Edit config.py and configure MQTT, and other settings if needed
 
 * Install python requirements:
 ````
@@ -49,7 +90,7 @@ pip install -r requirements.txt
 sudo apt-get install mongodb
 ````
 
-* Mosquitto mqtt broker: https://mosquitto.org/download/
+* Mosquitto MQTT broker: https://mosquitto.org/download/
 
 ````
 sudo apt-get install mosquitto
@@ -82,7 +123,7 @@ to start the video in debug mode (display the video source in a window)
 python video_processor.py --show-video --camera_device 0 
 ````
 
-### Creating users, deleting users, adding faces to users, deleting faces
+### CRUD operations
 
 HTTP API:
 
@@ -92,52 +133,52 @@ HTTP API:
 
 - delete a person photo
 
-- delete a person
-
+- get persons data
 
 **Create new user**
 
-POST request to: your_ip:8080/user/userid
+POST request to: machine_ip:8080/user/userid
 
-GET parameters:
+GET parameters: userid
 
-userid
+POST parameters: "name" containing the user name
 
-POST parameters
-
-"name" containing the user name
+````
+curl -X POST -d name=some_name http://machine_ip:8080/user/some_numeric_id
+````
 
 **Add new face to user**
 
-POST request to: your_ip:8080/face/face_id
+POST request to: http://machine_ip:8080/face/face_id
 
-GET parameters:
+GET parameters: "face_id": id of the face that will be stored in the db
 
-"face_id": id of the face that will be stored in the db
+POST parameters: "user_id": to what user id does the face belongs; "photo": the file to be upladed (containing one face)
 
-POST parameters:
-
-"user_id": to what user id does the face belongs
-
-"photo": the file to be upladed (containing one face)
+````
+curl -F "user_id=1" -F "photo=@/path_to_picture/picture.jpg" http://machine_ip:8080/face/face_number
+````
 
 **Delete face for user**
 
-DELETE request to: your_ip:8080/face/face_id
+DELETE request to: http://machine_ip:8080/face/face_id
 
-GET parameters:
+GET parameters: "face_id": id of the face that will be stored in the db
 
-"face_id": id of the face that will be stored in the db
+````
+curl -X DELETE http://machine_ip:8080/face/1
+````
 
 **Get users with photos**
 
-Get request to: your_ip:8080/users?page=1
+Get request to: http://machine_ip:8080/users?page=page_number
 
-GET parameters:
+GET parameters: "page" the page number to be returned
 
-"page" the page number to be returned
-
-### Listen to mqtt events, for example with cli mosquitto client:
+````
+curl -i http://machine_ip:8080/users?page=1
+````
+### Listen to MQTT events, for example with cli mosquitto client:
 
 ````
 sudo apt-get install mosquitto-clients
@@ -168,3 +209,11 @@ Will receive a json encoded user data (if found), and face coordonates in pictur
 ````
 sudo modprobe bcm2835-v4l2
 ````
+
+#### Libraries used for image processing
+
+[Opencv](https://github.com/opencv)
+
+[Face recognition](https://github.com/ageitgey/face_recognition)
+
+[Imutils](https://github.com/jrosebr1/imutils)

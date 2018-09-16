@@ -29,7 +29,8 @@ class UserRepository:
         users = []
         for user_data in raw_data:
             user = User(user_data['_id'], user_data['name'])
-            user.image_ids = user_data['faces']
+            if 'faces' in user_data['faces']:
+                user.image_ids = user_data['faces']
             users.append(user)
 
         return users

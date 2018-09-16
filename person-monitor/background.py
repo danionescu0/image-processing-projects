@@ -13,6 +13,8 @@ from lock.ConfiguredTimedLock import ConfiguredTimedLock
 
 
 listener_container = ListenerContainer()
+
+#configure email notifier
 if config.email['enabled']:
     email_timed_lock = ConfiguredTimedLock('email', config.email['min_time_between_emails'], TimedLock())
     email_notifier = EmailNotifier(config.email['sender_addr'], config.email['sender_password'])
@@ -20,6 +22,7 @@ if config.email['enabled']:
     email_alert_listener = EmailAlertListener(email_notifier, email_timed_lock, config.email['notified_address'])
     listener_container.register_listener(email_alert_listener)
 
+#configure devicehub notifier
 if config.devicehub['enabled']:
     devicehub_sensor_notifier = DevicehubSensorNotifier(config.devicehub['api_key'], config.devicehub['project_id'])
     devicehub_timed_lock = ConfiguredTimedLock('devicehub', 60, TimedLock())
@@ -28,10 +31,11 @@ if config.devicehub['enabled']:
                                                  config.devicehub['user_id_to_sensor_mapping'])
     listener_container.register_listener(devicehub_alert_listener)
 
+#configure local text to speech notifier
 if config.text_to_speech['enabled']:
     text_to_speech = TextToSpeech(config.text_to_speech['host'], config.text_to_speech['user'],
                                   config.text_to_speech['password'])
-    tts_timed_lock = ConfiguredTimedLock('tts', 5, TimedLock())
+    tts_timed_lock = ConfiguredTimedLock('tts', 50, TimedLock())
     listener_container.register_listener(TextToSpeechListener(text_to_speech, tts_timed_lock))
 
 listener_container.initialise()
