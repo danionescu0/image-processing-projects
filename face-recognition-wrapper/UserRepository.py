@@ -24,12 +24,16 @@ class UserRepository:
             .update_one({"_id": user.id}, update_data, True)
 
     def get_users(self, offset: int, limit: int) -> List[User]:
-        raw_data = list(self.__get_collection(self.COLLECTION_NAME)\
-            .find().skip(offset).limit(limit))
+        raw_data = list(
+            self.__get_collection(self.COLLECTION_NAME)\
+                .find()
+                .skip(offset)
+                .limit(limit)
+            )
         users = []
         for user_data in raw_data:
             user = User(user_data['_id'], user_data['name'])
-            if 'faces' in user_data['faces']:
+            if 'faces' in user_data:
                 user.image_ids = user_data['faces']
             users.append(user)
 

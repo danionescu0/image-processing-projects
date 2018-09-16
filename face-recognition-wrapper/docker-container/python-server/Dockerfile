@@ -85,7 +85,7 @@ RUN pip3 install picamera
 
 #install project
 WORKDIR /root
-RUN git clone https://github.com/danionescu0/image-processing-projects.git
+RUN echo 1 && git clone https://github.com/danionescu0/image-processing-projects.git
 COPY ./config.py /root/image-processing-projects/face-recognition-wrapper/config.py
 COPY ./requirements.txt /root/image-processing-projects/face-recognition-wrapper/requirements.txt
 RUN pip3 install -qr /root/image-processing-projects/face-recognition-wrapper/requirements.txt
@@ -102,7 +102,7 @@ RUN sed -i "s/List\[User\]/list/g" $(find /root/image-processing-projects -type 
 
 #run the project
 WORKDIR /root/image-processing-projects/face-recognition-wrapper
-CMD ["python3", "webserver.py"]
-CMD ["python3", "video_processor.py", "--camera_device", "0"]
+#CMD ["python3", "webserver.py"]
+#CMD ["python3", "video_processor.py", "--camera_device", "0"]
 
 EXPOSE 8080

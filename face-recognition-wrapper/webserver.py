@@ -21,24 +21,27 @@ face_paths = FacePaths(config.faces_path)
 face_extractor = FaceExtractor(face_paths)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
-face_notificator = FaceNotificator(mqtt_connection, user_repo,  config.faces_path)
+face_notificator = FaceNotificator(mqtt_connection, user_repo, config.faces_path)
 image_encoder = ImageEncoder(config.faces_path)
 
 
-# create tornado web app
+# create tornado web app with UserHandler, UsersHandler and FaceHandler
 def make_app():
     return tornado.web.Application([
-        (r"/user/(\w*)", UserHandler, dict(user_repo=user_repo)),
+        (r"/user/(\w*)", UserHandler,
+                dict(
+                    user_repo=user_repo)
+                ),
         (r"/users", UsersHandler,
-            dict(
-                user_repo=user_repo,
-                image_encoder=image_encoder,
-                face_paths=face_paths
-            )),
+                dict(
+                    user_repo=user_repo,
+                    image_encoder=image_encoder,
+                    face_paths=face_paths
+                )),
         (r"/face/(\w*)", FaceHandler,
                  dict(
                      user_repo=user_repo,
-                     upload_path='./temp',
+                     upload_path=config.faces_path,
                      face_extractor=face_extractor,
                      face_paths=face_paths,
                      face_notificator=face_notificator
