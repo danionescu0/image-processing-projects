@@ -25,7 +25,7 @@ parser.set_defaults(feature=False)
 args = parser.parse_args()
 
 # configure the image encoder, this is responsable for encoding an image as string to be sent to mqtt
-image_encoder = ImageEncoder(config.temporary_path)
+image_encoder = ImageEncoder(config.faces_path)
 
 # user repository responsable for persisting user information in the database
 user_repository = UserRepository(config.mongodb_uri)

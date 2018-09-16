@@ -6,13 +6,12 @@ services:
         privileged: true
         devices:
           - "/dev/video0:/dev/video0"
-        volumes:
-          - /var/log:/var/log
         depends_on:
             - mosquitto
             - mongodb
         ports:
             - "8080:8080"
+        tty: true
 
     mosquitto:
         image: mosquitto

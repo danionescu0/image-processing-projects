@@ -31,7 +31,6 @@ class UsersHandler(tornado.web.RequestHandler):
     # @Todo remove this .jpg hack
     def __get_images(self, image_ids: list) -> list:
         images = []
-        print(image_ids)
         for id in image_ids:
             file_path = self.__face_paths.get_low_resolution(id, 'jpg')
             images.append(self.__image_encoder.encode_image_file(file_path))

@@ -34,9 +34,12 @@ git clone https://github.com/danionescu0/image-processing-projects
 cd image-processing-projects/face-recognition-wrapper
 ````
 
-4. Edit ./moquitto/Dockerfile and change the default username and password
+4. Configurations:
+ 
+Edit ./moquitto/Dockerfile and change the default username and password
 
 Edit ./python-server/config.py and configure mosquitto username, password, and change any parameters if needed
+
 
 5. Ensure /dev/video0 is available on the machine
 

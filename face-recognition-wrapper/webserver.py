@@ -17,12 +17,12 @@ from web.UsersHandler import UsersHandler
 
 # configure objects instances
 user_repo = UserRepository(config.mongodb_uri)
-face_paths = FacePaths(config.faces_path, config.thumbs_path)
+face_paths = FacePaths(config.faces_path)
 face_extractor = FaceExtractor(face_paths)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
 face_notificator = FaceNotificator(mqtt_connection, user_repo,  config.faces_path)
-image_encoder = ImageEncoder(config.temporary_path)
+image_encoder = ImageEncoder(config.faces_path)
 
 
 # create tornado web app

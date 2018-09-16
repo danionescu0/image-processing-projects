@@ -84,7 +84,6 @@ RUN pip3 install face_recognition
 RUN pip3 install picamera
 
 #install project
-RUN ls -l
 WORKDIR /root
 RUN git clone https://github.com/danionescu0/image-processing-projects.git
 COPY ./config.py /root/image-processing-projects/face-recognition-wrapper/config.py

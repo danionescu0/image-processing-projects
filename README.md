@@ -1,4 +1,4 @@
-#Face recognition wrapper
+## Face recognition wrapper
 
 Video demo: https://www.youtube.com/watch?v=qufa4i4dOds&index=36&list=PLl_Vyjgh2HiI5V5EZHxj4Z3bFgkz9-2Z-&t=5s
 
@@ -21,7 +21,7 @@ known persons and notify what has found using MQTT.
 
 The library is well suited for a development board like Raspberry pi and for a face tracking and face recognition.
 
-#Person monitor
+## Person monitor
 
 In this project we're going to implement a real time person monitor with email notification,
 text to speech and DeviceHub integrations using the face recognition wrapper project (above)
@@ -36,7 +36,7 @@ We're going to receive face notification from "Face recognition wrapper" over MQ
 
 - track known persons on a graph using free IOT platforms like devicehub
 
-#Eye mouth remote controll](#Eye-mouth-remote-controll
+## Eye mouth remote controll](#Eye-mouth-remote-controll
 
 Video demo: https://www.youtube.com/watch?v=qufa4i4dOds&index=36&list=PLl_Vyjgh2HiI5V5EZHxj4Z3bFgkz9-2Z-&t=5s
 

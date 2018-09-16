@@ -20,12 +20,6 @@ mqtt = {
 }
 
 # folder containing faces images
-faces_path = './faces/'
-
-# folder containing thumbnails
-thumbs_path = './thumbs/'
-
-# temporary folder path for images
-temporary_path = './temp/'
+faces_path = '/root/image-processing-projects/face-recognition-wrapper/faces/'
 
 mongodb_uri = 'mongodb://mongodb:27017/'

@@ -6,13 +6,13 @@ import cv2
 
 
 class ImageEncoder:
-    def __init__(self, temporary_path) -> None:
-        self.__temporary_path = temporary_path
+    def __init__(self, faces_path) -> None:
+        self.__faces_path = faces_path
 
     # @Todo find a more elegant implementation for this
     def encode_numpy_image(self, numpy_image) -> str:
-        name = str(random.randint(10000, 9000000)) + '.jpg'
-        new_file_path = os.path.join(self.__temporary_path, name)
+        name = str(random.randint(10000, 9000000)) + '_temp.jpg'
+        new_file_path = os.path.join(self.__faces_path, name)
         cv2.imwrite(new_file_path, numpy_image)
         encoded_file = self.encode_image_file(new_file_path)
         os.remove(new_file_path)
