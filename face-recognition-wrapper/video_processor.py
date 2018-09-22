@@ -14,6 +14,7 @@ from imageprocessing.FaceFileNamesProvider import FaceFileNamesProvider
 from imageprocessing.FaceRecognition import FaceRecognition
 from imageprocessing.ImageEncoder import ImageEncoder
 from imageprocessing.FaceRecognitionProcessWrapper import FaceRecognitionProcessWrapper
+from imageprocessing.FaceDetector import FaceDetector
 from imageprocessing.ImageDebug import ImageDebug
 
 
@@ -33,27 +34,28 @@ user_repository = UserRepository(config.mongodb_uri)
 # mqtt connection for communication found faces
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'],
                                  config.mqtt['user'], config.mqtt['password'])
-mqtt_connection.connect()
+# mqtt_connection.connect()
 
 face_notificator = FaceNotificator(mqtt_connection, user_repository, config.faces_path)
 notification_listener = NotificationListener(mqtt_connection)
 
 
 # configure the video stream
-if args.camera is not None:
-    video_stream = VideoStream(args.camera).start()
-else:
-    video_stream = VideoStream(usePiCamera=True, resolution=(1024, 768)).start()
+video_stream = VideoStream(args.camera).start()
 frame_provider = FrameProvider(video_stream, config.image)
 
 # load the files on disk containing the faces and create the face recognition object
 filepaths = FaceFileNamesProvider().load(config.faces_path)
-face_recognition = FaceRecognition()
+face_detector = FaceDetector(
+    config.resources_path + 'deploy.prototxt.txt',
+    config.resources_path + 'res10_300x300_ssd_iter_140000.caffemodel',
+    0.5)
+face_detector.configure()
+face_recognition = FaceRecognition(face_detector)
 face_recognition.load_faces(filepaths)
 
 # configure the face recognition process wrapper
-face_recognition_process_wrapper = FaceRecognitionProcessWrapper(
-    face_recognition, config.frame_processing_threads * 3, config.frame_processing_threads)
+face_recognition_process_wrapper = FaceRecognitionProcessWrapper(face_recognition, config.frame_processing_threads)
 face_recognition_process_wrapper.start()
 
 # initialize the image debug, this will draw a circle and the face id on the image for debugging purposes
@@ -74,7 +76,6 @@ while not cv2.waitKey(30) & 0xFF == ord('q'):
     frame = frame_provider.read()
     face_recognition_process_wrapper.put_image(frame)
     image_with_detection, faces = face_recognition_process_wrapper.get_result()
-
     # when a detection has been found async using the process wrapper
     # notify listeners using MQTT
     if image_with_detection is not None and len(faces) > 0:

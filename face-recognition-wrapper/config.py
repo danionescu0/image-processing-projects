@@ -13,7 +13,7 @@ image = {
 # number of threads that will be spawned and that will handle actual face detection
 # the maximum number of threads you can use is the total available cores on your sistem -1 (the current working thread)
 # the more threads you use the more load you'll have on your machine causing more heat on the CPU
-frame_processing_threads = 2
+frame_processing_threads = 3
 
 # MQTT configuration
 # to configure mqtt over websockets: http://www.steves-internet-guide.com/mqtt-websockets/
@@ -26,5 +26,8 @@ mqtt = {
 
 # folder containing faces images
 faces_path = './faces/'
+
+# deep learning model resources
+resources_path = './resources/'
 
 mongodb_uri = 'mongodb://localhost:27017/'

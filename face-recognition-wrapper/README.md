@@ -116,10 +116,8 @@ python webserver.py
 ````
 python video_processor.py --camera_device 0
 ````
-Camera parameter is optional and it's mapped to the camera resource. It can be a raspberry pi camera or a webcam:
 0 means it's mapped with /dev/video0.
 
-If you're using a raspberry pi camera and have picamera module installed you can omit the --camera_device parameter, if you're using a webcam you need to specify the device number
 
 to start the video in debug mode (display the video source in a window)
 ````

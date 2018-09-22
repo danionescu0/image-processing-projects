@@ -3,19 +3,22 @@ from typing import List
 
 import face_recognition
 
-from imageprocessing.FaceDetector import FaceDetector
 from model.DetectedFace import DetectedFace
+from imageprocessing.FaceDetector import FaceDetector
 
 
-class FaceRecognition(FaceDetector):
-    def __init__(self):
+class FaceRecognition:
+    def __init__(self, face_detector: FaceDetector):
+        self.__face_detector = face_detector
         self.__known_face_encodings = []
         self.__known_face_filenames = []
 
     def find(self, image) -> List[DetectedFace]:
         rgb_frame = image[:, :, ::-1]
         # Find all the faces and face encodings in the current frame of video
-        face_locations = face_recognition.face_locations(rgb_frame)
+        face_locations = self.__face_detector.find(image)
+        if face_locations == []:
+            return []
         face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
         faces = []
         for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):

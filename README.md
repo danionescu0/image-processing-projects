@@ -36,7 +36,7 @@ We're going to receive face notification from "Face recognition wrapper" over MQ
 
 - track known persons on a graph using free IOT platforms like devicehub
 
-## Eye mouth remote controll](#Eye-mouth-remote-controll
+## Eye mouth remote controll
 
 Video demo: https://www.youtube.com/watch?v=qufa4i4dOds&index=36&list=PLl_Vyjgh2HiI5V5EZHxj4Z3bFgkz9-2Z-&t=5s
 

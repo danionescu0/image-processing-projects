@@ -7,7 +7,7 @@ image = {
     'rotate_camera_by': 180,
 
     # use only a specified percent of the image (starting with the center)
-    'use_percent_of_image': 50
+    'use_percent_of_image': 40
 }
 
 # number of threads that will be spawned and that will handle actual face detection
@@ -26,5 +26,8 @@ mqtt = {
 
 # folder containing faces images
 faces_path = '/root/image-processing-projects/face-recognition-wrapper/faces/'
+
+# deep learning model resources
+resources_path = '/root/image-processing-projects/face-recognition-wrapper/resources/'
 
 mongodb_uri = 'mongodb://mongodb:27017/'
