@@ -1,25 +1,15 @@
-import os
 import base64
-import random
 
 import cv2
 
 
 class ImageEncoder:
-    def __init__(self, faces_path) -> None:
-        self.__faces_path = faces_path
-
-    # @Todo find a more elegant implementation for this
     def encode_numpy_image(self, numpy_image) -> str:
-        name = str(random.randint(10000, 9000000)) + '_temp.jpg'
-        new_file_path = os.path.join(self.__faces_path, name)
-        cv2.imwrite(new_file_path, numpy_image)
-        encoded_file = self.encode_image_file(new_file_path)
-        os.remove(new_file_path)
-
-        return encoded_file
+        return self.__get_encoded(cv2.imencode('.jpg', numpy_image)[1])
 
     def encode_image_file(self, file_path: str) -> str:
         with open(file_path, 'rb') as open_file:
-            encoded = base64.b64encode(open_file.read()).decode('utf-8')
-            return encoded
+            return self.__get_encoded(open_file.read())
+
+    def __get_encoded(self, binary_file):
+        return base64.b64encode(binary_file).decode('utf-8')

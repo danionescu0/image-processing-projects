@@ -28,7 +28,7 @@ class FaceDetector:
                 continue
             # compute the (x, y)-coordinates of the bounding box for the object
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-            (startX, startY, endX, endY) = box.astype("int")
-            valid_detections.append((startY, endX, endY, startX))
+            (startX, startY, endX, endY) = box
+            valid_detections.append((int(startY), int(endX), int(endY), int(startX)))
 
         return valid_detections

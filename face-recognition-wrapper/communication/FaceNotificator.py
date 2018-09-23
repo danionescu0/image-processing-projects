@@ -15,12 +15,11 @@ class FaceNotificator:
         self.__faces_path = faces_path
 
     def notify_found(self, faces: List[DetectedFace], image: str):
-        faces = [self.__get_face_dict(face) for face in faces]
         data = {
                 'type': Notification.FACE_FOUND.value,
                 'data': {
                     'image': image,
-                    'faces': faces
+                    'faces': [self.__get_face_dict(face) for face in faces]
                 }
             }
         self.__mqtt.send(MqttConnection.CHANNEL, json.dumps(data))

@@ -22,7 +22,7 @@ face_extractor = FaceExtractor(face_paths)
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'], config.mqtt['user'], config.mqtt['password'])
 mqtt_connection.connect()
 face_notificator = FaceNotificator(mqtt_connection, user_repo, config.faces_path)
-image_encoder = ImageEncoder(config.faces_path)
+image_encoder = ImageEncoder()
 
 
 # create tornado web app with UserHandler, UsersHandler and FaceHandler
@@ -54,6 +54,7 @@ parser = argparse.ArgumentParser(description='Configuration')
 parser.add_argument('--port', dest='port', type=str, default=8080)
 args = parser.parse_args()
 
+# start webserver
 if __name__ == "__main__":
     app = make_app()
     app.listen(args.port, '0.0.0.0')

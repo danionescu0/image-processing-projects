@@ -25,8 +25,8 @@ parser.add_argument('-cd', '--camera_device', dest='camera', type=int)
 parser.set_defaults(feature=False)
 args = parser.parse_args()
 
-# configure the image encoder, this is responsable for encoding an image as string to be sent over MQTT
-image_encoder = ImageEncoder(config.faces_path)
+# initialize the image encoder, this is responsable for encoding an image as string to be sent over MQTT
+image_encoder = ImageEncoder()
 
 # user repository responsable for persisting user information in the database
 user_repository = UserRepository(config.mongodb_uri)
@@ -34,7 +34,7 @@ user_repository = UserRepository(config.mongodb_uri)
 # mqtt connection for communication found faces
 mqtt_connection = MqttConnection(config.mqtt['host'], config.mqtt['port'],
                                  config.mqtt['user'], config.mqtt['password'])
-# mqtt_connection.connect()
+mqtt_connection.connect()
 
 face_notificator = FaceNotificator(mqtt_connection, user_repository, config.faces_path)
 notification_listener = NotificationListener(mqtt_connection)
