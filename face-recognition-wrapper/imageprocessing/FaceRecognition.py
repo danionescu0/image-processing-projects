@@ -16,7 +16,8 @@ class FaceRecognition:
     def find(self, image) -> List[DetectedFace]:
         rgb_frame = image[:, :, ::-1]
         # Find all the faces and face encodings in the current frame of video
-        face_locations = self.__face_detector.find(image)
+        # face_locations = self.__face_detector.find(image)
+        face_locations = face_recognition.face_locations(rgb_frame)
         if face_locations == []:
             return []
         face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)

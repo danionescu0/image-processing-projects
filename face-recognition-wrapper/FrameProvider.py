@@ -27,9 +27,10 @@ class FrameProvider:
     #get image cropped from center
     def __get_cropped(self, image):
         height, width, channels = image.shape
-        start_x = int(width * self.__config['use_percent_of_image'] / 100 / 2)
+        percent = 100 - self.__config['use_percent_of_image']
+        start_x = int(width * percent / 100 / 2)
         end_x = width - start_x
-        start_y = int(height * self.__config['use_percent_of_image'] / 100 / 2)
+        start_y = int(height * percent / 100 / 2)
         end_y = height - start_y
 
         return image[start_y:end_y, start_x:end_x]

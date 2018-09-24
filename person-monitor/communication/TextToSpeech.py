@@ -1,6 +1,5 @@
 import requests
 import urllib
-from typeguard import typechecked
 
 
 class TextToSpeech:

@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-    python-server:
+    face-tracker:
         build: ./python-server/
         privileged: true
         devices:
@@ -11,6 +11,12 @@ services:
             - mongodb
         ports:
             - "8080:8080"
+        tty: true
+
+    person-monitor:
+        build: ../../person-monitor/docker-container
+        depends_on:
+            - mosquitto
         tty: true
 
     mosquitto:
