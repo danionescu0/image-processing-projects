@@ -102,7 +102,6 @@ RUN sed -i "s/List\[User\]/list/g" $(find /root/image-processing-projects -type 
 
 #run the project
 WORKDIR /root/image-processing-projects/face-recognition-wrapper
-CMD ["python3", "webserver.py"]
-CMD ["python3", "video_processor.py", "--camera_device", "0"]
+ENTRYPOINT ["python3", "webserver.py"]
 
 EXPOSE 8080

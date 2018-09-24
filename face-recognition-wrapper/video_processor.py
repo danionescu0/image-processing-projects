@@ -79,10 +79,10 @@ while not cv2.waitKey(30) & 0xFF == ord('q'):
     # when a detection has been found async using the process wrapper
     # notify listeners using MQTT
     if image_with_detection is not None and len(faces) > 0:
+        image_with_detection = image_debug.enhance_with_debug(image_with_detection, faces)
         face_notificator.notify_found(faces, image_encoder.encode_numpy_image(image_with_detection))
         if args.video:
-            last_identified = image_debug.enhance_with_debug(image_with_detection, faces)
-            cv2.imshow('last_capture', last_identified)
+            cv2.imshow('last_capture', image_with_detection)
     if args.video:
         cv2.imshow('frame', frame)
 

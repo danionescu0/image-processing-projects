@@ -31,5 +31,3 @@ mqtt = {
     'user': 'username',
     'password': 'password'
 }
-
-mongodb_uri = 'mongodb://mongodb:27017/'
