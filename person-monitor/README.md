@@ -17,7 +17,9 @@ to them by:
 
 ### Installing dependencies & configure
 
-* Edit config.py and configure mqtt, and other settings if needed
+*Alternatively you can use docker*
+
+* Edit config.py and configure MQTT, and other settings if needed
 
 * Details about sending email with gmail: http://stackabuse.com/how-to-send-emails-with-gmail-using-python/
 

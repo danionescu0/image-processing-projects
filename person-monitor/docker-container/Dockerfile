@@ -30,4 +30,4 @@ RUN sed -i "s/Callable\[\[codecs.StreamReader\], None\]/object/g" $(find /root/i
 
 #run the project
 WORKDIR /root/image-processing-projects/person-monitor
-#CMD ["python3", "background.py"]
+CMD ["python3", "background.py"]

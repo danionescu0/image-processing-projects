@@ -11,6 +11,8 @@ class ImageDebug:
         self.__line_width = line_width
         self.__font = cv2.FONT_HERSHEY_SIMPLEX
 
+    #draws a circle around the faces
+    #wite the person names near the face
     def enhance_with_debug(self, image, faces: List[DetectedFace]):
         for face in faces:
             center = (face.right - int((face.right - face.left) / 2), face.top + int((face.bottom - face.top) / 2))

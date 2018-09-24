@@ -13,6 +13,7 @@ services:
             - "8080:8080"
         tty: true
 
+    #this container uses the "person monitor project" if you don't need this please comment out the next linex
     person-monitor:
         build: ../../person-monitor/docker-container
         depends_on:
