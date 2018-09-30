@@ -14,7 +14,6 @@ from imageprocessing.FaceFileNamesProvider import FaceFileNamesProvider
 from imageprocessing.FaceRecognition import FaceRecognition
 from imageprocessing.ImageEncoder import ImageEncoder
 from imageprocessing.FaceRecognitionProcessWrapper import FaceRecognitionProcessWrapper
-from imageprocessing.FaceDetector import FaceDetector
 from imageprocessing.ImageDebug import ImageDebug
 
 
@@ -46,12 +45,7 @@ frame_provider = FrameProvider(video_stream, config.image)
 
 # load the files on disk containing the faces and create the face recognition object
 filepaths = FaceFileNamesProvider().load(config.faces_path)
-face_detector = FaceDetector(
-    config.resources_path + 'deploy.prototxt.txt',
-    config.resources_path + 'res10_300x300_ssd_iter_140000.caffemodel',
-    0.5)
-face_detector.configure()
-face_recognition = FaceRecognition(face_detector)
+face_recognition = FaceRecognition()
 face_recognition.load_faces(filepaths)
 
 # configure the face recognition process wrapper
