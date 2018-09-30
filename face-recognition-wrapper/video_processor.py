@@ -1,7 +1,7 @@
 import argparse
 
 import cv2
-from imutils.video import VideoStream
+import imutils
 
 import config
 from UserRepository import UserRepository
@@ -15,12 +15,14 @@ from imageprocessing.FaceRecognition import FaceRecognition
 from imageprocessing.ImageEncoder import ImageEncoder
 from imageprocessing.FaceRecognitionProcessWrapper import FaceRecognitionProcessWrapper
 from imageprocessing.ImageDebug import ImageDebug
+from imageprocessing.MotionDetector import MotionDetector
 
 
 # configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
 parser.add_argument('--show-video', dest='video', action='store_true', help='Shows video on GUI')
 parser.add_argument('-cd', '--camera_device', dest='camera', type=int)
+parser.add_argument('-m', '--use_motion', dest='motion', action='store_true')
 parser.set_defaults(feature=False)
 args = parser.parse_args()
 
@@ -40,8 +42,11 @@ notification_listener = NotificationListener(mqtt_connection)
 
 
 # configure the video stream
-video_stream = VideoStream(args.camera).start()
-frame_provider = FrameProvider(video_stream, config.image)
+frame_provider = FrameProvider(args.camera, config.image, (1600, 1200))
+
+# configure motion detector
+motion_detector = MotionDetector(config.image['resize_image_by_width'], 1000)
+motion_detector.configure()
 
 # load the files on disk containing the faces and create the face recognition object
 filepaths = FaceFileNamesProvider().load(config.faces_path)
@@ -68,7 +73,14 @@ frame_provider.start()
 # this will call the face recognition mechanism and notify if faces are found
 while not cv2.waitKey(30) & 0xFF == ord('q'):
     frame = frame_provider.read()
-    face_recognition_process_wrapper.put_image(frame)
+    if args.motion:
+        detected_motion = motion_detector.get_motion_box(frame)
+    else:
+        detected_motion = frame
+    if detected_motion is not None:
+        detected_motion = imutils.resize(detected_motion, width=config.image['resize_image_by_width'])
+        face_recognition_process_wrapper.put_image(detected_motion)
+    frame = imutils.resize(frame, width=config.image['resize_image_by_width'])
     image_with_detection, faces = face_recognition_process_wrapper.get_result()
     # when a detection has been found async using the process wrapper
     # notify listeners using MQTT

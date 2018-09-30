@@ -3,7 +3,7 @@ version: '2'
 services:
     face-tracker:
         build: ./python-server/
-        entrypoint: python3 video_processor.py --camera_device 0
+        entrypoint: python3 video_processor.py --camera_device 0 --use_motion
         privileged: true
         devices:
           - "/dev/video0:/dev/video0"

@@ -1,28 +1,28 @@
+import cv2
 import imutils
-from imutils.video import VideoStream
 
 
 class FrameProvider:
-    def __init__(self, video_stream: VideoStream, config: dict) -> None:
-        self.__video_stream = video_stream
+    def __init__(self, camera: str, config: dict, resolution: tuple) -> None:
+        # self.__video_stream = video_stream
+        self.__camera = camera
         self.__config = config
+        self.__resolution = resolution
+        self.__cap = None
 
     def start(self):
-        return self.__video_stream.start()
-
-    def update(self):
-        self.__video_stream.update()
+        self.__cap = cv2.VideoCapture(0)
+        self.__cap.set(3, self.__resolution[0])
+        self.__cap.set(4, self.__resolution[1])
+        # return self.__video_stream.start()
 
     def read(self):
-        image = self.__video_stream.read()
+        ret, image = self.__cap.read()
         if self.__config['use_percent_of_image'] != 100:
             image = self.__get_cropped(image)
 
-        # resize image as specified in config
-        frame = imutils.resize(image, width=self.__config['resize_image_by_width'])
-
         # rotate image as specified in config
-        return imutils.rotate(frame, self.__config['rotate_camera_by'])
+        return imutils.rotate(image, self.__config['rotate_camera_by'])
 
     #get image cropped from center
     def __get_cropped(self, image):
