@@ -2,16 +2,22 @@ import ntpath
 from typing import List
 
 import face_recognition
+import imutils
 
 from model.DetectedFace import DetectedFace
+from imageprocessing.CoordonatesScaler import CoordonatesScaler
 
 
 class FaceRecognition:
-    def __init__(self):
+    def __init__(self, coordonates_scaler: CoordonatesScaler, resize_image_by_width: int):
+        self.__coordonates_scaler = coordonates_scaler
+        self.__resize_image_by_width = resize_image_by_width
         self.__known_face_encodings = []
         self.__known_face_filenames = []
 
     def find(self, image) -> List[DetectedFace]:
+        (_, initial_width) = image.shape[:2]
+        image = imutils.resize(image, width=self.__resize_image_by_width)
         rgb_frame = image[:, :, ::-1]
         # Find all the faces and face encodings in the current frame of video
         face_locations = face_recognition.face_locations(rgb_frame)
@@ -28,6 +34,8 @@ class FaceRecognition:
                 first_match_index = matches.index(True)
                 filename = self.__known_face_filenames[first_match_index]
 
+            (top, right), (bottom, left) = self.__coordonates_scaler\
+                .get_scaled(((top, right), (bottom, left)), initial_width, self.__resize_image_by_width)
             faces.append(DetectedFace(filename, top, right, bottom, left))
 
         return faces
