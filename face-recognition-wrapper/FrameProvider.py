@@ -4,25 +4,31 @@ import imutils
 
 class FrameProvider:
     def __init__(self, camera: str, config: dict, resolution: tuple) -> None:
-        # self.__video_stream = video_stream
         self.__camera = camera
         self.__config = config
         self.__resolution = resolution
         self.__cap = None
+        self.__ret = None
+        self.__image = None
 
     def start(self):
         self.__cap = cv2.VideoCapture(0)
         self.__cap.set(3, self.__resolution[0])
         self.__cap.set(4, self.__resolution[1])
-        # return self.__video_stream.start()
 
-    def read(self):
+    def update_frame(self):
         ret, image = self.__cap.read()
+        if ret:
+            self.__image = image
+        else:
+            self.start()
+
+    def get_last_frame(self):
         if self.__config['use_percent_of_image'] != 100:
-            image = self.__get_cropped(image)
+            self.__image = self.__get_cropped(self.__image)
 
         # rotate image as specified in config
-        return imutils.rotate(image, self.__config['rotate_camera_by'])
+        return imutils.rotate(self.__image, self.__config['rotate_camera_by'])
 
     #get image cropped from center
     def __get_cropped(self, image):

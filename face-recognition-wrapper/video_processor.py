@@ -72,7 +72,8 @@ frame_provider.start()
 # the main loop, process frame by frame resises and rotates the frames if needed
 # this will call the face recognition mechanism and notify if faces are found
 while not cv2.waitKey(30) & 0xFF == ord('q'):
-    frame = frame_provider.read()
+    frame_provider.update_frame()
+    frame = frame_provider.get_last_frame()
     if args.motion:
         detected_motion = motion_detector.get_motion_box(frame)
     else:
