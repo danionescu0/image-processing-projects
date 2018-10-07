@@ -1,7 +1,7 @@
 # Face recognition wrapper
 
-This library  uses a video stream (from a webcam or raspbery pi camera) to identify faces and match then against 
-known persons and notify what has found using MQTT.
+This library uses a video stream (from a webcam or raspbery pi camera) to identify faces and match then against 
+known persons and notify what has found over MQTT.
 
 * Features
 * Installing with docker-compose
@@ -23,8 +23,9 @@ known persons and notify what has found using MQTT.
 - MQTT notifications with face coordonates, person id (if found), and encoded image
 
 
-The library is well suited for a development board like Raspberry pi and for a face tracking and face recognition.
+The library is suited for a development board like Raspberry pi and for a face tracking and face recognition.
 
+![diagram.png](https://github.com/danionescu0/image-processing-projects/blob/master/media/diagram.png)
 
 ### Installing with docker-compose
 1. Install docker and docker compose
@@ -84,6 +85,22 @@ docker-compose up
   Warning this is not secured yet
  
 9. Receive notification of persons (maybe use person-monitor project)
+
+10. (Optional) to run this as a service on system start on raspberry pi
+
+a. Copy the files from systemctl folder in systemctl folder to /etc/systemd/system/
+
+b. Enable services:
+````
+sudo systemctl enable rpi-docker-startup.service
+````
+
+c. Reboot
+
+d. Optional, check status:
+````
+sudo systemctl status rpi-docker-startup.service
+````
 
 
 ### Manually installing dependencies, configure and run the project
@@ -244,10 +261,10 @@ For face detection and face recognition i'm using face_recognition library: http
 
 This library has a 4 step process:
 
-1. load faces that we need to match from disk
+1. load faces that we need to match from disk and encode them
 2. find faces in a given image
 3. encode the found faces
-4. compare the encoded faces with the encodings from thouse found on disk
+4. compare the encoded faces with the encodings from those found on disk
 
 Because we're runing on a development board before applying these steps, we need to scale the image to a low resolution so we achieve 
 about one frame per second. The scaling is configurable, and the default for a raspberry pi is scale by width by 400
@@ -258,3 +275,15 @@ The webserver manages CRUD operatons for the users: create, get, update, delete,
 **How does the background process (video_processor.py) is able to load new faces and delete other without restarting the service**
 The background process listens using MQTT to some special events that say "this face has been added" or "that face has been deleted" 
 and updates the in memory face detectors
+
+**What is docker role in this project**
+
+Docker along docker-compose will create the infrastructure and configure all dependencies with minimum effort.
+
+There are four containers defined in docker-compose.yml and one for person monitor
+
+1. mongoDb instance container. This will store the users data
+2. Mosquitto container. This is the mean of communication for found faces
+3. face-tracker container. This will run the video_processor.py command
+4. face-tracker-webserver container. This will run the webserver that exposes the CRUD api
+5. an optional person-monitor container. This is not related to face-recognition-wrapper. This conainer runs https://github.com/danionescu0/image-processing-projects/tree/master/person-monitor

@@ -1,0 +1,12 @@
+[Unit]
+Description=Starts face recognition wrapper
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/projects/image-processing-projects/face-recognition-wrapper/docker-container
+ExecStartPre=modprobe bcm2835-v4l2
+ExecStart=/usr/local/bin/docker-compose "up"
+
+[Install]
+WantedBy=multi-user.target
