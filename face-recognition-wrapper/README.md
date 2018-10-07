@@ -3,7 +3,14 @@
 This library  uses a video stream (from a webcam or raspbery pi camera) to identify faces and match then against 
 known persons and notify what has found using MQTT.
 
-*Features:*
+* Features
+* Installing with docker-compose
+* Manually installing dependencies, configure and run the project
+* CRUD operations
+* Troubleshooting
+* How does it work
+
+### Features:
 
 - face identification in video stream
 
@@ -19,7 +26,7 @@ known persons and notify what has found using MQTT.
 The library is well suited for a development board like Raspberry pi and for a face tracking and face recognition.
 
 
-### Installing with docker and docker-compose
+### Installing with docker-compose
 1. Install docker and docker compose
   
 docker: curl -sSL https://get.docker.com | sh
@@ -79,7 +86,7 @@ docker-compose up
 9. Receive notification of persons (maybe use person-monitor project)
 
 
-### Manually installing dependencies & configure
+### Manually installing dependencies, configure and run the project
 
 * Edit config.py and configure MQTT, and other settings if needed
 
@@ -103,8 +110,6 @@ sudo apt-get install mosquitto
 
 For more information on how to set user and password check this url: http://www.steves-internet-guide.com/mqtt-username-password-example/
 
-### Running the project
-activate virtual environment if needed
 
 * Start the web server
 ````
@@ -211,10 +216,45 @@ Will receive a json encoded user data (if found), and face coordonates in pictur
 sudo modprobe bcm2835-v4l2
 ````
 
-#### Libraries used for image processing
+### How does it work
 
-[Opencv](https://github.com/opencv)
+**How does the whole mechanism is put togeather from getting the frames through the camera to sending faces and coordonates through MQTT ?**
 
-[Face recognition](https://github.com/ageitgey/face_recognition)
+The main program runs in an infinite loop until "q" key is pressed and performs series of steps:
 
-[Imutils](https://github.com/jrosebr1/imutils)
+1. reads a frame from the camera using opencv camera api
+2. rotates the camera if needed (there is a good change that the camera is mounted upside down or at an arbitrary angle)
+3. searches for motion in the frames, if found it returns a rectangle that contain motion
+4. if it has found motion, the algorithm continues asyncroniously on several processes that try to detect faces in the image.
+5. when a face or faces are detected the asyncronious processes communicates this by putting the images and the faces found on a special queue that can communicate between processes
+6. syncroniously still inside the loop the queue is queried for found images and faces
+7. if faces are found, image data along with faces coordonates and user data are sent through MQTT
+
+**How do we search for motion**
+1. the image is resized in a smaller format like 400x300 for better performance
+2. we use opencv function "createBackgroundSubtractorMOG2" to get areas of the images that contain motion
+3. using opencv "threshold" function we are able to convert the output of the function above to a mask containing motion or no motion pixels (black and white)
+4. we're applying opencv "dilate" function to create the motion zones more smoother and enlarge them a bit
+5. using opencv "findContours" we're able to get an array of all found objects that are in motion 
+6. the final step loops through all of the countours, discard the small ones, and find a maximum rectangle that fits all remaining objects
+
+**How does the face detection and face recognition works ?**
+ 
+For face detection and face recognition i'm using face_recognition library: https://github.com/ageitgey/face_recognition. 
+
+This library has a 4 step process:
+
+1. load faces that we need to match from disk
+2. find faces in a given image
+3. encode the found faces
+4. compare the encoded faces with the encodings from thouse found on disk
+
+Because we're runing on a development board before applying these steps, we need to scale the image to a low resolution so we achieve 
+about one frame per second. The scaling is configurable, and the default for a raspberry pi is scale by width by 400
+
+**What is the role of the webserver?**
+The webserver manages CRUD operatons for the users: create, get, update, delete, add new face etc.
+
+**How does the background process (video_processor.py) is able to load new faces and delete other without restarting the service**
+The background process listens using MQTT to some special events that say "this face has been added" or "that face has been deleted" 
+and updates the in memory face detectors

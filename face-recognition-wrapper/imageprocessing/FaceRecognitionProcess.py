@@ -1,5 +1,7 @@
 from multiprocessing import Process, Queue
 
+import numpy
+
 from imageprocessing.FaceRecognition import FaceRecognition
 
 
@@ -15,6 +17,8 @@ class FaceRecognitionProcess(Process):
         self.__stop = True
 
     def process_image(self, image):
+        if not type(image) is numpy.ndarray:
+            return
         faces = self.__face_recognition.find(image)
         if len(faces) > 0 and not self.__output_queue.full():
             self.__output_queue.put((image, faces))
