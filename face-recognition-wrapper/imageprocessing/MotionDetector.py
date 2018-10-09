@@ -21,29 +21,23 @@ class MotionDetector:
         thresh = cv2.dilate(thresh, None, iterations=3)
         contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        x1, y1, x2, y2 = self.__get_max_enclosing_rectangle(contours)
-        if x1 is not None:
-            (p1x, p1y), (p2x, p2y) = self.__coordonates_scaler\
-                .get_scaled(((x1, y1), (x2, y2)), initial_width, self.__resize_width)
-            return image[p1y:p2y, p1x:p2x]
+        if not len(contours[1]):
+            return None
+        contours = [contour for contour in contours[1] if
+                    cv2.contourArea(contour) > self.__min_contour_area]
+        if len(contours) == 0:
+            return None
+        x1, x2, y1, y2 = 5000, 5000, 5000, 5000
+        for countour in contours:
+            (x, y, w, h) = cv2.boundingRect(countour)
+            x1 = min(x, x1)
+            y1 = min(y, y1)
+            x2 = min(x + w, x2)
+            y2 = min(y + h, y2)
+        if x1 is 5000:
+            return None
+        (p1x, p1y), (p2x, p2y) = self.__coordonates_scaler\
+            .get_scaled(((x1, y1), (x2, y2)), initial_width, self.__resize_width)
 
-        return None
+        return image[p1y:p2y, p1x:p2x]
 
-    # todo improve this algotitm
-    def __get_max_enclosing_rectangle(self, contours):
-        x1 = []
-        x2 = []
-        y1 = []
-        y2 = []
-        for c in contours[1]:
-            if cv2.contourArea(c) < self.__min_contour_area:
-                continue
-            (x, y, w, h) = cv2.boundingRect(c)
-            x1.append(int(x))
-            y1.append(int(y))
-            x2.append(int(x + w))
-            y2.append(int(y + h))
-        if len(x1) > 0:
-            return min(x1), min(y1), min(x2), min(y2)
-
-        return None, None, None, None

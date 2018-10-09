@@ -1,5 +1,6 @@
 import cv2
 import imutils
+import time
 
 
 class FrameProvider:
@@ -13,6 +14,7 @@ class FrameProvider:
 
     def start(self):
         self.__cap = cv2.VideoCapture(0)
+        time.sleep(2)
         self.__cap.set(3, self.__resolution[0])
         self.__cap.set(4, self.__resolution[1])
 
@@ -21,6 +23,7 @@ class FrameProvider:
         if ret:
             self.__image = image
         else:
+            self.stop()
             self.start()
 
     def get_last_frame(self):
@@ -42,4 +45,4 @@ class FrameProvider:
         return image[start_y:end_y, start_x:end_x]
 
     def stop(self):
-        self.__video_stream.stop()
+        self.__cap.release()

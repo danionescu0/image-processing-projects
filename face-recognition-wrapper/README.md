@@ -248,6 +248,7 @@ The main program runs in an infinite loop until "q" key is pressed and performs 
 7. if faces are found, image data along with faces coordonates and user data are sent through MQTT
 
 **How do we search for motion**
+
 1. the image is resized in a smaller format like 400x300 for better performance
 2. we use opencv function "createBackgroundSubtractorMOG2" to get areas of the images that contain motion
 3. using opencv "threshold" function we are able to convert the output of the function above to a mask containing motion or no motion pixels (black and white)
@@ -270,9 +271,11 @@ Because we're runing on a development board before applying these steps, we need
 about one frame per second. The scaling is configurable, and the default for a raspberry pi is scale by width by 400
 
 **What is the role of the webserver?**
+
 The webserver manages CRUD operatons for the users: create, get, update, delete, add new face etc.
 
 **How does the background process (video_processor.py) is able to load new faces and delete other without restarting the service**
+
 The background process listens using MQTT to some special events that say "this face has been added" or "that face has been deleted" 
 and updates the in memory face detectors
 
