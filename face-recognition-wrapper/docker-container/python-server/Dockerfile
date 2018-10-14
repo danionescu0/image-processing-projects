@@ -42,7 +42,7 @@ RUN pip3 install numpy
 RUN pip3 install --upgrade setuptools
 RUN pip3 install picamera
 
-ENV OPENCV_VERSION 3.4.0
+ENV OPENCV_VERSION 3.4.3
 
 # download opencv
 WORKDIR opencv
@@ -91,7 +91,7 @@ RUN pip3 install face_recognition
 #install project
 WORKDIR /root
 RUN ls -l
-RUN git clone https://github.com/danionescu0/image-processing-projects.git
+RUN echo 13 && git clone https://github.com/danionescu0/image-processing-projects.git
 COPY ./config.py /root/image-processing-projects/face-recognition-wrapper/config.py
 COPY ./requirements.txt /root/image-processing-projects/face-recognition-wrapper/requirements.txt
 RUN pip3 install -qr /root/image-processing-projects/face-recognition-wrapper/requirements.txt

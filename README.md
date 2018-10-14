@@ -1,7 +1,5 @@
 ## Face recognition wrapper
 
-Video demo: https://www.youtube.com/watch?v=qufa4i4dOds&index=36&list=PLl_Vyjgh2HiI5V5EZHxj4Z3bFgkz9-2Z-&t=5s
-
 This library  uses a video stream (from a webcam or raspbery pi camera) to identify faces and match then against 
 known persons and notify what has found using MQTT.
 

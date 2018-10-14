@@ -25,7 +25,15 @@ known persons and notify what has found over MQTT.
 
 The library is suited for a development board like Raspberry pi and for a face tracking and face recognition.
 
-![diagram.png](https://github.com/danionescu0/image-processing-projects/blob/master/media/diagram.png)
+The high level architecture:
+
+![diagram.png](https://github.com/danionescu0/image-processing-projects/tree/master/face-recognition-wrapper/media/diagram.png)
+
+
+For the full presentation in open office format download it here:
+
+![presentation.odp](https://github.com/danionescu0/image-processing-projects/tree/master/face-recognition-wrapper/media/presentation.odp)
+
 
 ### Installing with docker-compose
 1. Install docker and docker compose
@@ -57,7 +65,7 @@ sudo modprobe bcm2835-v4l2
 ````
 This will mount /dev/video0
 
-If your video source is other than /dev/vide0 you'll need to change:
+If your video source is other than /dev/video0 you'll need to change:
 - ./python-server/Dockerfile and replace
 
 ````

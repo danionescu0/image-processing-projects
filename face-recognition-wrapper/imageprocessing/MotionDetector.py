@@ -11,7 +11,7 @@ class MotionDetector:
         self.__min_contour_area = min_contour_area
 
     def configure(self):
-        self.__background_substraction = cv2.createBackgroundSubtractorMOG2(history=2)
+        self.__background_substraction = cv2.createBackgroundSubtractorMOG2(history=4)
 
     def get_motion_box(self, image):
         (_, initial_width) = image.shape[:2]

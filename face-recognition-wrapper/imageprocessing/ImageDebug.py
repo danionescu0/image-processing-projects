@@ -20,6 +20,6 @@ class ImageDebug:
             cv2.circle(image, center, radius, self.__color, self.__line_width)
             image_text = 'id: ' + face.id if face.id is not None else 'Unknown'
             text_coordonates = (face.left - 10, face.top - 10)
-            cv2.putText(image, image_text, text_coordonates, self.__font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            cv2.putText(image, image_text, text_coordonates, self.__font, 2, (255, 255, 255), 3, cv2.LINE_AA)
 
         return image
