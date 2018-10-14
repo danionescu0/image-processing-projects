@@ -27,12 +27,12 @@ The library is suited for a development board like Raspberry pi and for a face t
 
 The high level architecture:
 
-![diagram.png](https://github.com/danionescu0/image-processing-projects/tree/master/face-recognition-wrapper/media/diagram.png)
+![diagram.png](https://github.com/danionescu0/image-processing-projects/raw/master/face-recognition-wrapper/media/diagram.png)
 
 
 For the full presentation in open office format download it here:
 
-![presentation.odp](https://github.com/danionescu0/image-processing-projects/tree/master/face-recognition-wrapper/media/presentation.odp)
+![presentation.odp](https://github.com/danionescu0/image-processing-projects/raw/master/face-recognition-wrapper/media/presentation.odp)
 
 
 ### Installing with docker-compose
