@@ -1,19 +1,18 @@
 from pydispatch import dispatcher
 
-from communication.EmailNotifier import EmailNotifier
+from communication.SmsSender import SmsSender
 from lock.ConfiguredTimedLock import ConfiguredTimedLock
 from event.FacesFound import FacesFound
 from listener.BaseListener import BaseListener
 from service.MessageGenerator import MessageGenerator
 
 
-class EmailAlertListener(BaseListener):
-    def __init__(self, email_notifier: EmailNotifier, timed_lock: ConfiguredTimedLock, address: str,
+class SmsSendListener(BaseListener):
+    def __init__(self, sms_sender: SmsSender, timed_lock: ConfiguredTimedLock,
                  message_generator: MessageGenerator) -> None:
         self.__message_generator = message_generator
-        self.__email_notifier = email_notifier
+        self.__sms_sender = sms_sender
         self.__timed_lock = timed_lock
-        self.__address = address
 
     def connect(self):
         dispatcher.connect(self.listen, signal="face_found", sender=dispatcher.Any)
@@ -21,15 +20,11 @@ class EmailAlertListener(BaseListener):
     def listen(self, event: FacesFound):
         if self.__timed_lock.has_lock():
             return
-        self.__email_notifier.send_alert(
-            self.__address,
-            "Persons found",
-            self.__get_email_body(event),
-            [('image.jpg', event.image)]
-        )
+        self.__sms_sender.send(self.get_text(event))
         self.__timed_lock.set_lock()
 
-    def __get_email_body(self, event: FacesFound):
+    # @todo refactore duplcate code
+    def get_text(self, event: FacesFound):
         body = 'The following users have been found: '
         for user in event.users:
             if user.user_id is None:

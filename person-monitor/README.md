@@ -11,8 +11,6 @@ to them by:
 
 - use a text to speech API to communicate by voice 
 
-- track known persons on a graph using free IOT platforms like devicehub
-
 
 
 ### Installing dependencies & configure
@@ -45,31 +43,6 @@ mqtt = {
 }
 ````
 
-* Configure devicehub integration if desired
-
-If you want to monitor the person in a nice GUI you can use the https://www.devicehub.net/ IOT platform.
-
-Create an account there, obtain the API key then create a project, on that project create a device (obtain the device uuid), 
-and for each person you want to monitor create an digital sensor.
-
-Make sure enabled is set to True, then copy the api_key, the device_uuid and project id in the config.py
-
-Then for each person you want to monitor and is registered in the face-recognition-wrapper, create a sensor and 
-check it in under the dictionary key: 'user_id_to_sensor_mapping' like below:
-
-````
-devicehub = {
-    'api_key': 'your_api_key',
-    'device_uuid': 'your_device_uuid',
-    'project_id': 'the_numeric_project_id',
-    'user_id_to_sensor_mapping': {
-        'some_user_id': 'some_sensor_from_devicehub',
-        'some_other_user_id': 'some_other_sensor_from_devicehub',
-        ...
-    },
-    'enabled': True
-}
-````
 
 * Configure email alerts. These alerts will contain the captured frame containing a face, along with a user name if the 
 face is found on the internal database;
@@ -89,7 +62,6 @@ email = {
     'enabled': True
 }
 ````
-
 
 * Configure text to speech
 

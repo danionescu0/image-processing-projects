@@ -1,32 +1,25 @@
-# email credentials, will be used to send an email
 email = {
-    'sender_addr': '',
-    'sender_password': '',
-    'notified_address': '',
+    'sender_addr': 'replace_with_own',
+    'sender_password': 'replace_with_own',
+    'notified_address': 'replace_with_own',
     'min_time_between_emails': 50,
     'enabled': True
 }
 
-# devicehub api_key, project etc, for logging the data as a devicehub sensor
-devicehub = {
-    'api_key': '',
-    'device_uuid': '',
-    'project_id': '',
-    'user_id_to_sensor_mapping': {
-        '23': 'Dan'
-    },
-    'enabled': True
+text_to_speech = {
+    'host': 'replace_with_own',
+    'user': 'replace_with_own',
+    'password' : 'replace_with_own',
+    'enabled': False
 }
 
-text_to_speech = {
-    'host': 'http://ip:80',
-    'user': 'test_user',
-    'password' : 'test_pass',
+sms = {
+    'url': 'http://sms_sending_uri',
     'enabled': True
 }
 
 mqtt = {
-    'host': 'mosquitto',
+    'host': 'replace_with_own',
     'port': 1884, # mosquitto default port
     'user': 'username',
     'password': 'password'
