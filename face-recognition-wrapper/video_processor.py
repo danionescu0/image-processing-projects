@@ -22,7 +22,7 @@ from imageprocessing.CoordonatesScaler import CoordonatesScaler
 
 # configure argument parser
 parser = argparse.ArgumentParser(description='Configuration')
-parser.add_argument('--show-video', dest='video', action='store_true', help='Shows video on GUI')
+parser.add_argument('--show_video', dest='video', action='store_true', help='Shows video on GUI')
 parser.add_argument('-cd', '--camera_device', dest='camera', type=int)
 parser.add_argument('-m', '--use_motion', dest='motion', action='store_true')
 parser.set_defaults(feature=False)

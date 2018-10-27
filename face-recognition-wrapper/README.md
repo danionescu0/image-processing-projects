@@ -151,7 +151,7 @@ python video_processor.py --camera_device 0
 
 to start the video in debug mode (display the video source in a window)
 ````
-python video_processor.py --show-video --camera_device 0 
+python video_processor.py --show_video --camera_device 0 
 ````
 
 ### CRUD operations
@@ -297,4 +297,5 @@ There are four containers defined in docker-compose.yml and one for person monit
 2. Mosquitto container. This is the mean of communication for found faces
 3. face-tracker container. This will run the video_processor.py command
 4. face-tracker-webserver container. This will run the webserver that exposes the CRUD api
-5. an optional person-monitor container. This is not related to face-recognition-wrapper. This conainer runs https://github.com/danionescu0/image-processing-projects/tree/master/person-monitor
+5. an optional person-monitor container. This is not related to face-recognition-wrapper. 
+This conainer runs https://github.com/danionescu0/image-processing-projects/tree/master/person-monitor

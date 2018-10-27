@@ -1,9 +1,8 @@
 from multiprocessing import Process, Queue
 
-import numpy
-import time
-
 from imageprocessing.FaceRecognition import FaceRecognition
+import time
+import numpy
 
 
 class FaceRecognitionProcess(Process):

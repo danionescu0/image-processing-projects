@@ -6,7 +6,7 @@ image = {
     # angle to rotate camera in degreeds
     'rotate_camera_by': 180,
 
-    # use onlt a specified percent of the image (starting with the center)
+    # use only a specified percent of the image (starting with the center)
     'use_percent_of_image': 100
 }
 
