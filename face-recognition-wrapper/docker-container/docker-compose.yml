@@ -1,35 +1,35 @@
 version: '2'
 
 services:
-#    face-tracker:
-#        build: ./python-server/
-#        entrypoint: python3 -u video_processor.py --camera_device 0 --use_motion
-#        privileged: true
-#        devices:
-#          - "/dev/video0:/dev/video0"
-#        depends_on:
-#            - mosquitto
-#            - mongodb
-#        volumes:
-#            - ../faces:/root/image-processing-projects/face-recognition-wrapper/faces
-#        tty: true
-#
-#    face-tracker-webserver:
-#        build: ./python-server/
-#        depends_on:
-#            - mosquitto
-#            - mongodb
-#        ports:
-#            - "8080:8080"
-#        volumes:
-#            - ../faces:/root/image-processing-projects/face-recognition-wrapper/faces
-#
-#    #this container uses the "person monitor project" if you don't need this please comment out the next lines
-#    person-monitor:
-#        build: ../../person-monitor/docker-container
-#        depends_on:
-#            - mosquitto
-#        tty: true
+    face-tracker:
+        build: ./python-server/
+        entrypoint: python3 -u video_processor.py --camera_device 0 --use_motion
+        privileged: true
+        devices:
+          - "/dev/video0:/dev/video0"
+        depends_on:
+            - mosquitto
+            - mongodb
+        volumes:
+            - ../faces:/root/image-processing-projects/face-recognition-wrapper/faces
+        tty: true
+
+    face-tracker-webserver:
+        build: ./python-server/
+        depends_on:
+            - mosquitto
+            - mongodb
+        ports:
+            - "8080:8080"
+        volumes:
+            - ../faces:/root/image-processing-projects/face-recognition-wrapper/faces
+
+    #this container uses the "person monitor project" if you don't need this please comment out the next lines
+    person-monitor:
+        build: ../../person-monitor/docker-container
+        depends_on:
+            - mosquitto
+        tty: true
 
     mosquitto:
         image: mosquitto
